@@ -12,10 +12,22 @@
     }
   },
   "tabs": [
-    { "name": "시작하기", "url": "getting-started" },
-    { "name": "핵심 기능", "url": "persona" },
-    { "name": "자동화", "url": "automation" },
-    { "name": "실전 활용", "url": "practice" }
+    {
+      "name": "시작하기",
+      "url": "getting-started"
+    },
+    {
+      "name": "핵심 기능",
+      "url": "persona"
+    },
+    {
+      "name": "자동화",
+      "url": "automation"
+    },
+    {
+      "name": "실전 활용",
+      "url": "practice"
+    }
   ],
   "navigation": [
     {
