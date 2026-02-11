@@ -1,0 +1,180 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "OpenClaw 완전 가이드",
+  "colors": {
+    "primary": "#10B981",
+    "light": "#34D399",
+    "dark": "#059669"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "introduction",
+              "table-of-contents"
+            ]
+          },
+          {
+            "group": "Part 1: AI 에이전트와 생활하기",
+            "pages": [
+              "mindset/always-on-agent",
+              "mindset/trust-and-delegation",
+              "mindset/proactive-vs-reactive",
+              "mindset/multi-persona"
+            ]
+          },
+          {
+            "group": "Part 4: 메모리 시스템",
+            "pages": [
+              "memory/memory-md",
+              "memory/daily-notes",
+              "memory/memory-search",
+              "memory/heartbeat-state"
+            ]
+          },
+          {
+            "group": "Part 5: 스킬 생태계",
+            "pages": [
+              "skills/clawhub",
+              "skills/install-skills",
+              "skills/create-skills",
+              "skills/skill-md-format",
+              "skills/popular-skills"
+            ]
+          },
+          {
+            "group": "Part 7: 노드 & 디바이스",
+            "pages": [
+              "nodes/pairing",
+              "nodes/camera",
+              "nodes/location",
+              "nodes/screen-recording",
+              "nodes/multi-device"
+            ]
+          },
+          {
+            "group": "Part 8: 메시징 통합",
+            "pages": [
+              "messaging/telegram",
+              "messaging/discord",
+              "messaging/signal",
+              "messaging/whatsapp",
+              "messaging/group-chat-tips"
+            ]
+          },
+          {
+            "group": "Part 9: 브라우저 & 웹",
+            "pages": [
+              "browser/browser-control",
+              "browser/web-search",
+              "browser/web-fetch",
+              "browser/chrome-relay"
+            ]
+          },
+          {
+            "group": "Part 10: 코딩 에이전트",
+            "pages": [
+              "coding/claude-code",
+              "coding/codex",
+              "coding/dev-workflow",
+              "coding/github-integration"
+            ]
+          },
+          {
+            "group": "Part 11: 보안 & 권한",
+            "pages": [
+              "security/exec-policy",
+              "security/tool-filtering",
+              "security/safe-operations",
+              "security/privacy"
+            ]
+          },
+          {
+            "group": "Part 13: 학습 로드맵",
+            "pages": [
+              "roadmap/beginner",
+              "roadmap/intermediate",
+              "roadmap/advanced",
+              "roadmap/references"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "시작하기",
+        "groups": [
+          {
+            "group": "Part 2: 설치 & 첫 설정",
+            "pages": [
+              "getting-started/installation",
+              "getting-started/first-config",
+              "getting-started/telegram-setup",
+              "getting-started/discord-setup"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "핵심 기능",
+        "groups": [
+          {
+            "group": "Part 3: 대화 & 페르소나",
+            "pages": [
+              "persona/soul-md",
+              "persona/identity-md",
+              "persona/user-md",
+              "persona/multi-persona-setup",
+              "persona/tone-and-voice"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "자동화",
+        "groups": [
+          {
+            "group": "Part 6: 자동화",
+            "pages": [
+              "automation/heartbeat",
+              "automation/cron-jobs",
+              "automation/proactive-patterns",
+              "automation/heartbeat-md",
+              "automation/scheduled-tasks"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "실전 활용",
+        "groups": [
+          {
+            "group": "Part 12: 실전 사례",
+            "pages": [
+              "practice/email-management",
+              "practice/calendar",
+              "practice/home-automation",
+              "practice/devops",
+              "practice/research",
+              "practice/writing",
+              "practice/daily-briefing",
+              "practice/imessage",
+              "practice/apple-reminders",
+              "practice/excel"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/openclaw"
+    }
+  }
+}
