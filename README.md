@@ -26,15 +26,6 @@
 | 💬 **Discord** | [discord.gg/clawd](https://discord.gg/clawd) |
 | 📦 **스킬 마켓** | [clawhub.com](https://clawhub.com) |
 | 📝 **공식 문서** | [docs.openclaw.ai](https://docs.openclaw.ai) |
-| 🎉 **오프라인 밋업** | [다음 밋업 신청](https://luma.com/mia2se79) |
-
-## 오프라인 밋업 🇰🇷
-
-OpenClaw Korea는 정기적으로 오프라인 밋업을 진행합니다.
-AI 에이전트를 직접 체험하고, 다른 사용자들과 노하우를 공유하세요!
-
-👉 [밋업 일정 & 참가 신청](https://luma.com/mia2se79)
-
 ## 기여하기
 
 이 가이드는 오픈소스입니다. 오타 수정, 새로운 팁 추가, 번역 등 어떤 기여든 환영합니다!
