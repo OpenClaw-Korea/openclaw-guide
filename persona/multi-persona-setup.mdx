@@ -1,0 +1,84 @@
+---
+title: "멀티 페르소나 설정"
+description: "여러 성격을 전환하며 사용하기"
+---
+
+# 멀티 페르소나 설정
+
+하나의 OpenClaw 인스턴스에서 상황에 맞는 여러 페르소나를 사용하는 방법입니다.
+
+## 워크스페이스 분리 방식
+
+가장 확실한 방법은 워크스페이스를 분리하는 것입니다:
+
+```bash
+# 업무용
+mkdir -p ~/work-agent && cd ~/work-agent
+cat > SOUL.md << 'SOUL'
+넌 전문적인 업무 비서야.
+간결하고 정확하게, 존댓말 사용.
+SOUL
+
+# 개인용
+mkdir -p ~/personal-agent && cd ~/personal-agent
+cat > SOUL.md << 'SOUL'
+넌 편한 친구야.
+반말, 유머, 이모지 자유롭게.
+SOUL
+```
+
+## 채널별 매핑
+
+```yaml
+# config.yaml
+workspaces:
+  work:
+    path: ~/work-agent
+    channels:
+      - discord:work-server
+  personal:
+    path: ~/personal-agent
+    channels:
+      - telegram:my-bot
+```
+
+## 단일 워크스페이스에서 전환
+
+워크스페이스를 분리하지 않고, 대화 중에 모드를 전환할 수도 있습니다:
+
+```markdown
+# SOUL.md
+넌 상황에 맞게 모드를 전환할 수 있어.
+
+## 기본 모드: 캐주얼
+- 반말, 편하게
+
+## /work 모드: 업무
+- 존댓말, 간결하게
+
+## /dev 모드: 개발
+- 기술적, 코드 중심
+```
+
+<Tip>
+대화 중 "/work" 또는 "/dev"를 보내면 AI가 모드를 전환합니다.
+단, 이 방식은 워크스페이스 분리보다 일관성이 떨어질 수 있습니다.
+</Tip>
+
+## 그룹별 페르소나
+
+같은 AI가 그룹에 따라 다르게 행동하도록 설정:
+
+```markdown
+# AGENTS.md
+
+## 그룹 채팅 페르소나
+- #general: 밝고 친근하게, 이모지 자유롭게
+- #development: 기술적이고 정확하게
+- #random: 유머러스하게, 밈 OK
+```
+
+<Warning>
+MEMORY.md의 개인 정보가 그룹으로 새지 않도록 주의하세요.
+그룹 채팅에서는 MEMORY.md가 로드되지 않습니다.
+</Warning>

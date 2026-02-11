@@ -1,0 +1,155 @@
+---
+title: "예약 작업"
+description: "리마인더, 정기 리포트, 반복 태스크 설정하기"
+---
+
+# 예약 작업
+
+OpenClaw로 리마인더부터 정기 리포트까지,
+시간 기반 자동화를 설정하는 방법을 알아봅니다.
+
+## 리마인더
+
+가장 간단한 예약 작업입니다. 자연어로 요청하면 AI가 크론잡을 만듭니다.
+
+### 자연어 방식
+
+```
+사용자: "20분 후에 빨래 꺼내라고 알려줘"
+→ AI가 자동으로:
+  openclaw cron add --name "빨래" \
+    --at "+20m" \
+    --message "빨래 꺼낼 시간이야!" \
+    --announce --delete-after-run
+```
+
+```
+사용자: "내일 오전 9시에 약 먹으라고 해줘"
+→ openclaw cron add --name "약" \
+    --at "2026-02-12T09:00:00+09:00" \
+    --message "약 먹을 시간!" \
+    --announce --delete-after-run
+```
+
+### CLI 직접 방식
+
+```bash
+# 일회성 리마인더
+openclaw cron add --name "meeting-prep" \
+  --at "+45m" \
+  --message "회의 준비 시간. 발표 자료 최종 점검해" \
+  --announce --delete-after-run
+
+# 반복 리마인더 (매일 약 복용)
+openclaw cron add --name "medicine" \
+  --cron "0 8 * * *" --tz "Asia/Seoul" \
+  --message "아침 약 먹을 시간입니다 💊" \
+  --announce
+```
+
+<Tip>
+"알려줘", "리마인드해줘"라고 말하면 AI가 알아서 크론잡을 만듭니다.
+CLI를 직접 쓸 필요가 거의 없습니다.
+</Tip>
+
+## 정기 리포트
+
+### 일일 브리핑
+
+```bash
+openclaw cron add --name "daily-briefing" \
+  --cron "0 7 * * *" --tz "Asia/Seoul" \
+  --message "모닝 브리핑: 1) 오늘 날씨 2) 오늘 일정 3) 안 읽은 중요 이메일 4) 어제 미완료 태스크" \
+  --announce --session isolated \
+  --model "anthropic/claude-sonnet-4-20250514" \
+  --thinking off
+```
+
+### 주간 리포트
+
+```bash
+openclaw cron add --name "weekly-report" \
+  --cron "0 18 * * 5" --tz "Asia/Seoul" \
+  --message "주간 리포트: 이번 주 memory/ 파일 읽고 1) 완료한 일 2) 진행중인 일 3) 다음 주 할 일 정리" \
+  --announce --session isolated \
+  --timeout-seconds 120
+```
+
+### 월간 회고
+
+```bash
+openclaw cron add --name "monthly-review" \
+  --cron "0 20 1 * *" --tz "Asia/Seoul" \
+  --message "월간 회고: 지난 달 memory/ 전체 검토. 주요 성과, 배운 점, 개선할 점 정리. MEMORY.md도 업데이트해" \
+  --announce --session isolated \
+  --model "anthropic/claude-opus-4-20250514" \
+  --thinking medium \
+  --timeout-seconds 300
+```
+
+<Info>
+리포트 복잡도에 따라 모델을 다르게 설정하세요.
+일일 브리핑은 Sonnet, 월간 회고는 Opus가 적합합니다.
+</Info>
+
+## 반복 태스크 패턴
+
+<CardGroup cols={2}>
+  <Card title="🧹 메모리 정리" icon="broom">
+    주 1회 오래된 일일 노트를 검토하고 MEMORY.md 업데이트
+  </Card>
+  <Card title="📊 Git 상태" icon="code-branch">
+    매일 저녁 커밋 안 된 변경사항 알림
+  </Card>
+  <Card title="💰 구독 관리" icon="credit-card">
+    매월 1일 구독 서비스 현황 점검
+  </Card>
+  <Card title="📚 독서 리마인더" icon="book">
+    매일 밤 30분 독서 시간 알림
+  </Card>
+</CardGroup>
+
+```bash
+# 메모리 정리 (매주 일요일 21시)
+openclaw cron add --name "memory-cleanup" \
+  --cron "0 21 * * 0" --tz "Asia/Seoul" \
+  --message "이번 주 memory/ 파일 검토. 중요한 건 MEMORY.md에 정제, 사소한 건 정리" \
+  --session isolated --no-deliver
+
+# Git 상태 체크 (매일 19시)
+openclaw cron add --name "git-check" \
+  --cron "0 19 * * *" --tz "Asia/Seoul" \
+  --message "워크스페이스 git status 확인. 커밋 안 된 변경 있으면 알려줘" \
+  --announce
+```
+
+## 예약 작업 관리 팁
+
+<Steps>
+  <Step title="목록 확인">
+```bash
+openclaw cron list
+```
+현재 등록된 모든 잡을 볼 수 있습니다.
+  </Step>
+  <Step title="불필요한 잡 정리">
+```bash
+# 비활성화된 잡 찾기
+openclaw cron list | grep disabled
+
+# 필요 없는 잡 삭제
+openclaw cron rm --name "old-reminder"
+```
+  </Step>
+  <Step title="실행 이력 확인">
+```bash
+openclaw cron runs --name "daily-briefing"
+```
+실패한 잡이 있으면 원인을 파악하세요.
+  </Step>
+</Steps>
+
+<Warning>
+크론잡이 너무 많으면 API 비용이 급증합니다.
+비슷한 시간대의 체크는 하나로 묶고, 단순 반복은 하트비트를 활용하세요.
+</Warning>

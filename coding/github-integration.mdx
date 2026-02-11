@@ -1,0 +1,169 @@
+---
+title: "GitHub 연동"
+description: "gh CLI를 활용한 GitHub 워크플로우 자동화"
+---
+
+# GitHub 연동
+
+OpenClaw는 **gh CLI**를 통해 GitHub의 모든 기능을 자연어로 제어할 수 있습니다.
+PR 생성, 이슈 관리, 코드 리뷰까지 대화만으로 처리하세요.
+
+## 사전 준비
+
+```bash
+# gh CLI 설치 (macOS)
+brew install gh
+
+# GitHub 인증
+gh auth login
+```
+
+<Info>
+`gh auth status`로 인증 상태를 확인할 수 있습니다.
+OpenClaw는 시스템에 설치된 gh CLI를 그대로 사용합니다.
+</Info>
+
+## Pull Request 관리
+
+### PR 생성
+
+```
+"현재 브랜치로 PR 만들어줘. 제목은 'feat: 사용자 프로필 페이지 추가'"
+```
+
+OpenClaw가 실행하는 명령:
+```bash
+gh pr create --title "feat: 사용자 프로필 페이지 추가" \
+  --body "## 변경사항\n- 프로필 페이지 컴포넌트 추가\n- API 라우트 구현" \
+  --assignee @me
+```
+
+### PR 리뷰
+
+```
+"PR #15 diff 보여줘"
+"PR #15에 리뷰 코멘트 남겨줘"
+```
+
+```bash
+# PR 상세 보기
+gh pr view 15
+
+# diff 확인
+gh pr diff 15
+
+# 리뷰 제출
+gh pr review 15 --approve --body "LGTM! 깔끔합니다."
+gh pr review 15 --request-changes --body "몇 가지 수정이 필요합니다."
+```
+
+### PR 머지
+
+```
+"PR #15 스쿼시 머지해줘"
+```
+
+```bash
+gh pr merge 15 --squash --delete-branch
+```
+
+## Issues 관리
+
+### 이슈 생성 및 조회
+
+```
+"로그인 버그 이슈 만들어줘"
+"열린 이슈 목록 보여줘"
+```
+
+```bash
+# 이슈 생성
+gh issue create --title "🐛 로그인 시 세션 만료 오류" \
+  --body "## 재현 방법\n1. 로그인\n2. 30분 대기\n3. 페이지 새로고침" \
+  --label "bug" --assignee @me
+
+# 이슈 목록
+gh issue list --state open --limit 20
+
+# 이슈 검색
+gh issue list --search "login bug" --label "bug"
+```
+
+### 이슈 관리
+
+```bash
+# 이슈 닫기
+gh issue close 42 --comment "PR #15에서 수정됨"
+
+# 라벨 추가
+gh issue edit 42 --add-label "priority:high"
+
+# 마일스톤 설정
+gh issue edit 42 --milestone "v2.0"
+```
+
+## GitHub Actions
+
+```
+"마지막 워크플로우 실행 결과 보여줘"
+"CI 실패 로그 확인해줘"
+```
+
+```bash
+# 워크플로우 실행 목록
+gh run list --limit 5
+
+# 실패한 실행의 로그
+gh run view 12345 --log-failed
+
+# 워크플로우 수동 실행
+gh workflow run deploy.yml --ref main
+```
+
+## 릴리즈 관리
+
+```bash
+# 릴리즈 생성
+gh release create v1.2.0 --title "v1.2.0" \
+  --notes "## What's New\n- 프로필 페이지\n- 성능 개선" \
+  --generate-notes
+
+# 릴리즈 목록
+gh release list
+```
+
+## 실전 자동화 예시
+
+### 매일 이슈 요약 크론잡
+
+```bash
+openclaw cron add --name "github-daily" \
+  --cron "0 9 * * 1-5" --tz "Asia/Seoul" \
+  --message "GitHub 이슈 현황 요약해줘. 열린 이슈, 내게 할당된 PR, 실패한 CI" \
+  --announce --session isolated
+```
+
+### PR 자동 리뷰 요청
+
+```
+"새 PR이 올라오면 알려줘" → 하트비트에서 주기적으로 확인:
+```
+
+```bash
+# HEARTBEAT.md에 추가
+gh pr list --search "is:open review-requested:@me" --json number,title
+```
+
+<Tip>
+`gh api`를 사용하면 GitHub REST/GraphQL API에 직접 접근할 수 있습니다.
+복잡한 쿼리나 커스텀 자동화에 활용하세요.
+</Tip>
+
+## 유용한 gh 별칭
+
+```bash
+# 자주 쓰는 명령 별칭 설정
+gh alias set prs 'pr list --search "is:open author:@me"'
+gh alias set reviews 'pr list --search "is:open review-requested:@me"'
+gh alias set myissues 'issue list --assignee @me --state open'
+```

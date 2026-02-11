@@ -1,0 +1,137 @@
+---
+title: "설치"
+description: "OpenClaw 설치부터 첫 실행까지"
+---
+
+# 설치
+
+OpenClaw는 Node.js 기반의 로컬 AI 에이전트 플랫폼입니다.
+설치는 5분이면 충분합니다.
+
+## 필수 조건
+
+| 요구사항 | 최소 버전 | 권장 |
+|---------|----------|------|
+| Node.js | v22+ | v25+ |
+| npm | v9+ | 최신 |
+| OS | macOS / Linux | macOS (Apple Silicon) |
+| API 키 | Anthropic Claude | Claude Opus 4 권장 |
+
+<Warning>
+Windows는 WSL2 환경에서 사용 가능하지만, macOS/Linux를 강력히 권장합니다.
+</Warning>
+
+## 설치 방법
+
+<Steps>
+  <Step title="npm으로 설치">
+```bash
+npm install -g openclaw@latest
+```
+  </Step>
+  <Step title="설치 확인">
+```bash
+openclaw --version
+# OpenClaw v2026.x.x
+```
+  </Step>
+  <Step title="온보딩 마법사 실행">
+```bash
+openclaw onboard
+```
+마법사가 단계별로 안내합니다:
+1. AI 모델 선택 (Anthropic Claude 권장)
+2. API 키 입력
+3. 채널 연동 설정
+4. 워크스페이스 초기화
+  </Step>
+  <Step title="Gateway 시작">
+```bash
+openclaw gateway start
+```
+  </Step>
+</Steps>
+
+## API 키 설정
+
+<Tabs>
+  <Tab title="Anthropic Claude">
+```bash
+# .env 또는 설정 파일에
+ANTHROPIC_API_KEY=sk-ant-xxxxx
+
+# 또는 CLI로
+openclaw config set anthropic.apiKey "sk-ant-xxxxx"
+```
+<Tip>
+Claude Opus 4가 가장 뛰어난 성능을 보입니다. Sonnet은 빠르고 저렴한 대안입니다.
+</Tip>
+  </Tab>
+  <Tab title="OpenAI">
+```bash
+OPENAI_API_KEY=sk-xxxxx
+openclaw config set openai.apiKey "sk-xxxxx"
+```
+  </Tab>
+</Tabs>
+
+## 워크스페이스 구조
+
+설치 후 생성되는 기본 구조:
+
+```
+~/.openclaw/           # 또는 커스텀 경로
+├── AGENTS.md          # AI 행동 규칙
+├── SOUL.md            # AI 성격 정의
+├── USER.md            # 사용자 프로필
+├── MEMORY.md          # 장기 기억
+├── HEARTBEAT.md       # 하트비트 체크리스트
+├── TOOLS.md           # 도구 로컬 설정
+├── memory/            # 일일 노트
+│   └── 2026-01-15.md
+├── skills/            # 설치된 스킬
+└── config.yaml        # 설정 파일
+```
+
+## Gateway 데몬 관리
+
+```bash
+openclaw gateway status    # 상태 확인
+openclaw gateway start     # 시작
+openclaw gateway stop      # 중지
+openclaw gateway restart   # 재시작
+```
+
+<Info>
+Gateway는 포트 18789에서 실행됩니다.
+`http://127.0.0.1:18789`에서 웹 대시보드에 접근할 수 있습니다.
+</Info>
+
+## 자동 시작 설정
+
+컴퓨터 부팅 시 자동 실행:
+
+```bash
+# macOS
+openclaw onboard --install-daemon
+
+# Linux (systemd)
+openclaw daemon install
+```
+
+## 문제 해결
+
+```bash
+# 진단 도구
+openclaw doctor
+
+# 로그 확인
+tail -f /tmp/openclaw-gateway.log
+```
+
+<Warning>
+`openclaw not found` 에러가 나면 PATH 설정을 확인하세요:
+```bash
+export PATH="$PATH:$(npm config get prefix)/bin"
+```
+</Warning>

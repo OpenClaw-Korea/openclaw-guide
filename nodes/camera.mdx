@@ -1,0 +1,125 @@
+---
+title: "카메라"
+description: "노드 카메라로 사진/영상 촬영하기"
+---
+
+# 카메라
+
+페어링된 노드의 카메라를 원격으로 제어하여
+**사진 촬영, 영상 클립, 실시간 모니터링**이 가능합니다.
+
+## 사진 촬영 (camera_snap)
+
+```bash
+# CLI로 촬영
+openclaw nodes camera --node "my-iphone" --mode snap --facing back
+
+# 전면 카메라
+openclaw nodes camera --node "my-iphone" --mode snap --facing front
+
+# 양쪽 다
+openclaw nodes camera --node "my-iphone" --mode snap --facing both
+```
+
+AI 도구로는:
+
+```
+nodes.camera_snap(node="my-iphone", facing="back")
+nodes.camera_snap(node="my-iphone", facing="front")
+nodes.camera_snap(node="my-iphone", facing="both")
+```
+
+<Tip>
+`facing="both"`를 쓰면 전면/후면 사진을 동시에 찍어줍니다.
+실내 상황 파악에 유용합니다.
+</Tip>
+
+## 영상 클립 (camera_clip)
+
+짧은 영상을 녹화합니다:
+
+```bash
+openclaw nodes camera --node "my-iphone" \
+  --mode clip --facing back --duration 10s
+```
+
+AI 도구:
+
+```
+nodes.camera_clip(
+  node="my-iphone",
+  facing="back",
+  durationMs=10000
+)
+```
+
+## 활용 사례
+
+<CardGroup cols={2}>
+  <Card title="🏠 홈 모니터링" icon="house">
+    외출 중 집 상태 확인. "거실 지금 어때?" 한마디로 촬영
+  </Card>
+  <Card title="🐱 반려동물" icon="cat">
+    반려동물 상태 체크. 자동 하트비트로 정기 확인도 가능
+  </Card>
+  <Card title="📦 택배 확인" icon="box">
+    현관 카메라로 택배 도착 확인
+  </Card>
+  <Card title="🌱 식물 관리" icon="leaf">
+    식물 상태를 찍어서 AI가 물 줄 시기 판단
+  </Card>
+</CardGroup>
+
+## 자동 모니터링
+
+하트비트와 결합하면 정기적으로 카메라를 확인할 수 있습니다:
+
+```markdown
+# HEARTBEAT.md에 추가
+
+## 카메라 체크 (4시간마다)
+- [ ] 거실 카메라 → 이상한 점 있으면 알림
+- [ ] 현관 카메라 → 택배 도착 확인
+```
+
+또는 크론잡으로:
+
+```bash
+openclaw cron add --name "home-check" \
+  --every "4h" \
+  --message "거실 카메라 확인해서 특이사항 있으면 알려줘" \
+  --announce --session isolated \
+  --model "anthropic/claude-sonnet-4-20250514"
+```
+
+## 화질 설정
+
+```bash
+# 고화질 (기본)
+--quality 90
+
+# 저화질 (빠른 전송)
+--quality 50
+
+# 최대 너비 제한
+--max-width 1920
+```
+
+## TOOLS.md에 카메라 정보 기록
+
+```markdown
+### Cameras
+- my-iphone → 거실 테이블, 후면=거실 전체, 전면=천장
+- my-ipad → 서재, 후면=책상, 전면=방 입구
+- my-macbook → 내장 웹캠, 작업 공간
+```
+
+<Info>
+TOOLS.md에 카메라 위치와 용도를 기록하면 AI가 "거실 봐줘"라는 요청을
+어떤 노드의 어떤 카메라로 처리할지 자동으로 판단합니다.
+</Info>
+
+<Warning>
+카메라 접근은 개인정보와 직결됩니다.
+페어링된 디바이스가 분실되지 않도록 주의하세요.
+</Warning>

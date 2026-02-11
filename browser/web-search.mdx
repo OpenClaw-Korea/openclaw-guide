@@ -1,0 +1,112 @@
+---
+title: "웹 검색"
+description: "Brave Search API로 웹 검색하기"
+---
+
+# 웹 검색
+
+OpenClaw는 **Brave Search API**를 통해 웹 검색이 가능합니다.
+AI가 최신 정보를 찾아서 답변하는 핵심 도구입니다.
+
+## 기본 사용
+
+```
+web_search(query="OpenClaw 설치 방법")
+```
+
+AI에게 자연어로 요청하면 자동으로 검색합니다:
+
+```
+사용자: "요즘 맥북 프로 가격이 얼마야?"
+→ AI: web_search(query="MacBook Pro 2026 price Korea")
+→ 결과 분석 후 답변
+```
+
+## 검색 옵션
+
+```
+web_search(
+  query="서울 날씨",
+  country="KR",           # 지역 필터
+  search_lang="ko",       # 검색 언어
+  count=5,                # 결과 수 (1-10)
+  freshness="pd"          # 최신순 필터
+)
+```
+
+### Freshness (신선도) 필터
+
+| 값 | 의미 |
+|----|------|
+| `pd` | 지난 24시간 |
+| `pw` | 지난 1주 |
+| `pm` | 지난 1개월 |
+| `py` | 지난 1년 |
+| `YYYY-MM-DDtoYYYY-MM-DD` | 날짜 범위 |
+
+<Tip>
+뉴스나 최신 정보를 찾을 때는 `freshness="pd"` 또는 `"pw"`를 사용하세요.
+오래된 정보가 섞이는 걸 방지합니다.
+</Tip>
+
+## 활용 패턴
+
+<CardGroup cols={2}>
+  <Card title="🌤️ 날씨 확인" icon="cloud-sun">
+    `web_search(query="서울 강남 날씨", country="KR")`
+  </Card>
+  <Card title="📰 뉴스 검색" icon="newspaper">
+    `web_search(query="AI 뉴스", freshness="pd")`
+  </Card>
+  <Card title="💰 가격 비교" icon="tag">
+    `web_search(query="아이폰 16 최저가")`
+  </Card>
+  <Card title="📚 기술 문서" icon="book">
+    `web_search(query="React useEffect cleanup")`
+  </Card>
+</CardGroup>
+
+## 검색 결과 형태
+
+```json
+{
+  "results": [
+    {
+      "title": "서울 날씨 - 기상청",
+      "url": "https://weather.go.kr/...",
+      "description": "서울 현재 기온 5°C, 맑음..."
+    }
+  ]
+}
+```
+
+AI는 이 결과를 분석하고, 필요하면 `web_fetch`로 상세 내용을 가져옵니다.
+
+## web_search vs web_fetch vs browser
+
+| 도구 | 용도 | 속도 | 비용 |
+|------|------|------|------|
+| `web_search` | 검색 결과 목록 | 빠름 | 낮음 |
+| `web_fetch` | 특정 URL 콘텐츠 | 보통 | 낮음 |
+| `browser` | JS 렌더링 필요 사이트 | 느림 | 높음 |
+
+<Info>
+일반적인 정보 검색 흐름:
+1. `web_search`로 검색
+2. 관련 URL을 `web_fetch`로 상세 조회
+3. JavaScript 필요시에만 `browser` 사용
+</Info>
+
+## 모닝 브리핑에서의 활용
+
+```bash
+openclaw cron add --name "morning-news" \
+  --cron "0 7 * * *" --tz "Asia/Seoul" \
+  --message "오늘의 주요 뉴스를 검색해서 5줄로 요약해줘. 기술, 경제 중심으로." \
+  --announce --session isolated
+```
+
+<Warning>
+검색 API에는 일일 사용량 제한이 있을 수 있습니다.
+불필요한 반복 검색은 피하세요.
+</Warning>

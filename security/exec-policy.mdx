@@ -1,0 +1,163 @@
+---
+title: "exec 보안 정책"
+description: "명령어 실행 권한을 제어하는 exec 보안 모드"
+---
+
+# exec 보안 정책
+
+OpenClaw의 `exec` 도구는 시스템 명령어를 실행할 수 있습니다.
+**exec 보안 정책**으로 어떤 명령어를 허용할지 세밀하게 제어하세요.
+
+## 세 가지 모드
+
+
+  ### deny (기본값)
+모든 exec 호출을 차단합니다. 가장 안전한 모드입니다.
+
+```yaml
+# config.yaml
+exec:
+  security: deny
+```
+어떤 명령어도 실행 불가
+읽기 전용 환경에 적합
+코딩 에이전트 스킬도 exec 사용 불가
+  
+  ### allowlist (추천)
+허용된 명령어만 실행할 수 있습니다.
+
+```yaml
+exec:
+  security: allowlist
+  allowlist:
+git
+gh
+npm
+node
+cat
+ls
+grep
+find
+curl
+jq
+```
+명시적으로 허용한 바이너리만 실행 가능
+파이프, 리다이렉트는 쉘을 통해 실행되므로 주의
+**프로덕션 환경에 권장**
+  
+  ### full
+모든 명령어를 제한 없이 실행합니다.
+
+```yaml
+exec:
+  security: full
+```
+모든 시스템 명령어 사용 가능
+개발/테스트 환경에서만 사용 권장
+`rm -rf`, `sudo` 등 위험한 명령도 실행 가능
+
+<Warning>
+`full` 모드는 강력하지만 위험합니다.
+신뢰할 수 있는 환경에서만 사용하고, AGENTS.md의 안전 규칙을 반드시 설정하세요.
+</Warning>
+  
+
+
+## 설정 방법
+
+### 글로벌 설정
+
+```bash
+# config.yaml 위치
+~/.config/openclaw/config.yaml
+```
+
+```yaml
+exec:
+  security: allowlist
+  allowlist:
+git
+gh
+npm
+node
+python3
+remindctl
+imsg
+gog
+```
+
+### 채널별 오버라이드
+
+특정 채널에서만 다른 정책을 적용할 수 있습니다:
+
+```yaml
+channels:
+  telegram:
+    exec:
+      security: allowlist
+      allowlist: [git, gh, npm, node]
+  discord:
+    exec:
+      security: deny  # Discord에서는 exec 차단
+```
+
+## allowlist 설계 가이드
+
+### 일상 사용자
+
+```yaml
+allowlist:
+cat       # 파일 읽기
+ls        # 디렉토리 탐색
+grep      # 검색
+find      # 파일 찾기
+date      # 날짜/시간
+curl      # HTTP 요청
+jq        # JSON 처리
+remindctl # Apple Reminders
+imsg      # iMessage
+gog       # Google (Gmail, Calendar)
+```
+
+### 개발자
+
+```yaml
+allowlist:
+git
+gh
+npm
+npx
+node
+python3
+pip
+docker
+kubectl
+make
+cargo
+```
+
+## ask 모드
+
+명령어 실행 전 사용자에게 확인을 요청할 수 있습니다:
+
+```yaml
+exec:
+  security: full
+  ask: always      # 항상 물어봄
+  # ask: on-miss   # allowlist에 없을 때만 물어봄
+  # ask: off       # 물어보지 않음
+```
+
+<Tip>
+`allowlist` + `ask: on-miss` 조합이 유연하면서도 안전합니다.
+허용 목록에 없는 명령어는 사용자 승인 후 실행됩니다.
+</Tip>
+
+## 감사 로그
+
+모든 exec 호출은 OpenClaw 로그에 기록됩니다:
+
+```bash
+# 최근 exec 실행 이력 확인
+openclaw gateway logs | grep "exec"
+```

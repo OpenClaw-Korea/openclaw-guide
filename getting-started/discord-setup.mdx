@@ -1,0 +1,95 @@
+---
+title: "Discord 연동"
+description: "디스코드 봇 설정하고 OpenClaw에 연결하기"
+---
+
+# Discord 연동
+
+Discord는 개발자 커뮤니티와 팀 환경에서 특히 유용합니다.
+
+## 봇 생성
+
+<Steps>
+  <Step title="Developer Portal 접속">
+    [Discord Developer Portal](https://discord.com/developers/applications)에 접속합니다.
+  </Step>
+  <Step title="새 Application 생성">
+    "New Application" 클릭 → 이름 입력.
+  </Step>
+  <Step title="봇 추가">
+    좌측 메뉴 "Bot" → "Add Bot" 클릭.
+  </Step>
+  <Step title="Intents 활성화">
+    **반드시** 다음을 켜세요:
+    - MESSAGE CONTENT INTENT ✅
+    - SERVER MEMBERS INTENT ✅
+    - PRESENCE INTENT (선택)
+  </Step>
+  <Step title="토큰 복사">
+    "Reset Token" → 토큰을 복사합니다.
+  </Step>
+</Steps>
+
+<Warning>
+**MESSAGE CONTENT INTENT**를 활성화하지 않으면 봇이 메시지 내용을 읽을 수 없습니다.
+이것은 가장 흔한 실수입니다.
+</Warning>
+
+## OpenClaw 설정
+
+```yaml
+# config.yaml
+channels:
+  discord:
+    token: "YOUR_DISCORD_BOT_TOKEN"
+    respondTo: mentions   # mentions | all | dm-only
+```
+
+## 서버에 봇 초대
+
+1. Developer Portal → OAuth2 → URL Generator
+2. Scopes: `bot`, `applications.commands`
+3. Bot Permissions: `Send Messages`, `Read Message History`, `Add Reactions`
+4. 생성된 URL로 서버에 초대
+
+```
+https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=68672&scope=bot
+```
+
+## Discord 특화 기능
+
+<CardGroup cols={2}>
+  <Card title="스레드 지원" icon="comments">
+    스레드에서 대화를 이어갈 수 있습니다.
+  </Card>
+  <Card title="이모지 리액션" icon="face-smile">
+    자연스러운 이모지 반응으로 대화에 참여합니다.
+  </Card>
+  <Card title="마크다운" icon="markdown">
+    Discord 마크다운 형식을 자동으로 사용합니다.
+  </Card>
+  <Card title="DM 지원" icon="envelope">
+    서버뿐 아니라 DM에서도 대화 가능합니다.
+  </Card>
+</CardGroup>
+
+<Info>
+Discord에서는 마크다운 테이블이 지원되지 않습니다.
+AI가 자동으로 불릿 리스트 형태로 변환합니다.
+</Info>
+
+## 그룹 채팅 설정
+
+```yaml
+discord:
+  guilds:
+    - guildId: "123456789"
+      channels:
+        - channelId: "987654321"
+          respondTo: mentions
+```
+
+<Tip>
+여러 링크를 보낼 때는 `<>`로 감싸서 임베드를 억제하세요:
+`<https://example.com>`
+</Tip>

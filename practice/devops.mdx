@@ -1,0 +1,143 @@
+---
+title: "DevOps"
+description: "서버 관리, 모니터링, CI/CD를 OpenClaw로 자동화하기"
+---
+
+# DevOps
+
+OpenClaw를 DevOps 어시스턴트로 활용하면 서버 관리와 모니터링을 대화로 처리할 수 있습니다.
+
+## 서버 모니터링
+
+### 상태 체크
+
+```
+"서버 상태 확인해줘"
+"디스크 용량 얼마나 남았어?"
+"메모리 사용량 높은 프로세스 보여줘"
+```
+
+```bash
+# 시스템 상태
+exec: uptime && df -h && free -h
+
+# 프로세스 상태
+exec: ps aux --sort=-%mem | head -20
+
+# Docker 컨테이너 상태
+exec: docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
+
+### 주기적 모니터링
+
+```bash
+openclaw cron add --name "server-health" \
+  --every "30m" \
+  --message "서버 상태 점검. 디스크 90% 이상, 메모리 80% 이상, 다운된 서비스 있으면 알려줘." \
+  --announce --session isolated \
+  --model "anthropic/claude-sonnet-4-20250514"
+```
+
+## SSH를 통한 원격 관리
+
+```bash
+# TOOLS.md에 SSH 호스트 기록
+### SSH
+- prod-server → 10.0.1.100, user: deploy
+- staging → 10.0.1.200, user: deploy
+```
+
+```
+"프로덕션 서버 로그 확인해줘"
+"스테이징 서버 재시작해줘"
+```
+
+```bash
+exec: ssh prod-server "tail -100 /var/log/app/error.log"
+exec: ssh staging "sudo systemctl restart app"
+```
+
+<Warning>
+프로덕션 서버 조작은 반드시 확인 후 실행하세요.
+AGENTS.md에 "프로덕션 명령은 먼저 물어볼 것" 규칙을 추가하세요.
+</Warning>
+
+## Docker 관리
+
+```
+"앱 컨테이너 로그 보여줘"
+"nginx 재시작해줘"
+```
+
+```bash
+# 로그 확인
+exec: docker logs --tail 50 app-container
+
+# 컨테이너 재시작
+exec: docker restart nginx
+
+# docker compose
+exec: cd ~/deploy && docker compose up -d --build app
+```
+
+## CI/CD 연동
+
+### GitHub Actions 모니터링
+
+```bash
+# 최근 실행 상태
+exec: gh run list --repo myorg/myapp --limit 5
+
+# 실패한 빌드 로그
+exec: gh run view <run-id> --log-failed
+```
+
+### 배포 자동화
+
+```
+"스테이징에 최신 코드 배포해줘"
+```
+
+```bash
+# 배포 스크립트 실행
+exec: cd ~/deploy && ./deploy.sh staging
+
+# 또는 GitHub Actions 트리거
+exec: gh workflow run deploy.yml --ref main -f environment=staging
+```
+
+## 로그 분석
+
+```
+"오늘 에러 로그 분석해줘"
+"500 에러가 얼마나 발생했어?"
+```
+
+```bash
+# 에러 로그 추출
+exec: grep "ERROR" /var/log/app/app.log | tail -50
+
+# HTTP 500 에러 카운트
+exec: grep "HTTP 500" /var/log/nginx/access.log | wc -l
+
+# 최근 1시간 에러 패턴
+exec: awk '/ERROR/ {print $0}' /var/log/app/app.log | tail -30
+```
+
+OpenClaw가 로그를 분석하고 패턴을 요약합니다.
+
+## 알림 설정
+
+```bash
+# 서버 다운 시 즉시 알림
+openclaw cron add --name "uptime-check" \
+  --every "5m" \
+  --message "curl -sf https://myapp.com/health 실행해서 실패하면 바로 알려줘" \
+  --announce --session isolated \
+  --model "anthropic/claude-sonnet-4-20250514" --thinking off
+```
+
+<Tip>
+단순 헬스체크에는 저렴한 모델(`sonnet` + `--thinking off`)을 사용하세요.
+장애 분석이 필요할 때만 고급 모델을 쓰면 비용을 크게 줄일 수 있습니다.
+</Tip>

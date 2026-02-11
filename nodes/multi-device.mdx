@@ -1,0 +1,127 @@
+---
+title: "멀티 디바이스"
+description: "여러 디바이스를 연결하고 관리하기"
+---
+
+# 멀티 디바이스
+
+OpenClaw는 여러 노드를 동시에 페어링하여
+**디바이스 간 협업**이 가능한 환경을 구축합니다.
+
+## 구성 예시
+
+```
+         [Gateway]
+        /    |    \
+  [iPhone] [Mac] [iPad]
+  거실     서재    침실
+```
+
+## TOOLS.md로 디바이스 맵 관리
+
+```markdown
+# TOOLS.md
+
+### Nodes
+- my-iphone → 거실 테이블, 카메라(CCTV), 위치 추적
+- my-macbook → 서재, 메인 작업 머신, 화면 녹화
+- my-ipad → 침실, 보조 카메라, 취침 알림용
+- home-server → NAS, 항상 켜져 있음, 명령 실행 전용
+```
+
+<Info>
+TOOLS.md에 디바이스 정보를 기록하면 AI가 "거실 확인해줘"라는 요청을
+자동으로 `my-iphone` 노드로 연결합니다.
+</Info>
+
+## 디바이스별 역할 분담
+
+<CardGroup cols={2}>
+  <Card title="📱 모바일 (iPhone/iPad)" icon="mobile">
+    - 카메라 (홈 모니터링)
+    - GPS 위치
+    - 푸시 알림
+  </Card>
+  <Card title="💻 Mac" icon="laptop">
+    - 화면 녹화
+    - 명령 실행 (shell)
+    - 웹캠
+    - 파일 시스템 접근
+  </Card>
+</CardGroup>
+
+## 멀티 노드 시나리오
+
+### 집 전체 상태 확인
+
+```
+사용자: "집 전체 상태 봐줘"
+→ AI:
+  1. camera_snap(node="my-iphone", facing="back")  → 거실
+  2. camera_snap(node="my-ipad", facing="back")     → 침실
+  3. screen_record(node="my-macbook")               → 서재 모니터
+→ "거실: 불 꺼져있고 조용. 침실: 고양이가 침대 위. 서재: 모니터 켜져있어요."
+```
+
+### 원격 명령 실행
+
+```
+사용자: "NAS에서 백업 스크립트 실행해줘"
+→ AI: nodes.run(node="home-server", command=["bash", "/opt/backup.sh"])
+```
+
+### 위치 + 날씨 콤보
+
+```
+사용자: "지금 밖에 나가도 될까?"
+→ AI:
+  1. location_get(node="my-iphone")
+  2. web_search("weather {lat},{lon}")
+  3. camera_snap(node="my-iphone", facing="back")  → 창밖
+→ "현재 서초구, 기온 3°C. 창밖 보니 하늘이 흐리네요. 얇은 패딩 추천합니다."
+```
+
+## 노드 상태 모니터링
+
+```bash
+# 모든 노드 상태 확인
+openclaw nodes list
+
+# 특정 노드 상세
+openclaw nodes describe --node "my-iphone"
+```
+
+AI가 하트비트에서 자동으로 노드 상태를 확인하게 할 수도 있습니다:
+
+```markdown
+# HEARTBEAT.md
+
+## 노드 상태 (하루 1회)
+- [ ] 모든 노드 연결 상태 확인 → 오프라인이면 알림
+```
+
+## 노드 추가 시 체크리스트
+
+<Steps>
+  <Step title="노드 호스트 설치/앱 설치">
+    Mac: `openclaw node install` / iOS: App Store
+  </Step>
+  <Step title="페어링 및 승인">
+    `openclaw nodes approve --node "device-name"`
+  </Step>
+  <Step title="기능 확인">
+    `openclaw nodes describe --node "device-name"`
+  </Step>
+  <Step title="TOOLS.md 업데이트">
+    디바이스 위치, 용도, 카메라 방향 기록
+  </Step>
+  <Step title="테스트">
+    카메라 촬영, 위치 확인 등 기본 동작 테스트
+  </Step>
+</Steps>
+
+<Warning>
+노드가 많을수록 관리 포인트가 늘어납니다.
+실제로 사용하는 디바이스만 페어링하세요.
+오래 사용하지 않는 노드는 비활성화하는 것이 좋습니다.
+</Warning>

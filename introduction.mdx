@@ -1,0 +1,105 @@
+---
+title: "OpenClaw 완전 가이드"
+description: "24시간 함께하는 AI 에이전트 — 60가지 이상의 실전 팁과 워크플로우"
+---
+
+# OpenClaw 완전 가이드
+
+2026년, AI는 더 이상 브라우저에서 열어보는 도구가 아닙니다.
+**메신저에서 항상 대기하고, 기억하고, 스스로 판단하여 행동하는 존재** — 그것이 OpenClaw입니다.
+
+이 가이드는 OpenClaw를 처음 접하는 사람부터 고급 자동화를 구축하는 파워유저까지,
+**60가지 이상의 실전 팁**을 체계적으로 정리한 결정판입니다.
+
+<CardGroup cols={3}>
+  <Card title="60+ 실전 팁" icon="lightbulb">
+    설치부터 멀티 에이전트까지, 매일 쓰는 팁을 단계별로 다룹니다.
+  </Card>
+  <Card title="복사 붙여넣기 설정" icon="code">
+    모든 팁마다 바로 쓸 수 있는 설정 파일과 명령어를 제공합니다.
+  </Card>
+  <Card title="비개발자도 OK" icon="hand-wave">
+    Telegram에서 AI 비서를 쓰고 싶은 분도 따라할 수 있습니다.
+  </Card>
+</CardGroup>
+
+## "도구"가 아니라 "동거인"
+
+<Info>
+  ChatGPT는 택시입니다 — 필요할 때 부릅니다.
+  OpenClaw는 룸메이트입니다 — 항상 거기 있습니다.
+</Info>
+
+| | ChatGPT / Claude.ai | OpenClaw |
+|---|---|---|
+| **접근** | 브라우저 열기 | 메신저에서 DM |
+| **기억** | 매번 설명 | MEMORY.md로 장기 기억 |
+| **행동** | 물어봐야 답함 | 하트비트로 먼저 연락 |
+| **성격** | 범용 AI | SOUL.md로 나만의 페르소나 |
+| **확장** | 플러그인 | 스킬 + 노드 + 서브에이전트 |
+| **실행** | 클라우드 | 내 맥/서버에서 로컬 |
+
+## 이 가이드의 구성
+
+<CardGroup cols={2}>
+  <Card title="Part 1-2: 시작" icon="rocket" href="/mindset/always-on-agent">
+    마인드셋 전환 → 설치 → 메신저 연동. **30분**이면 AI와 첫 대화를 시작합니다.
+  </Card>
+  <Card title="Part 3-4: 나만의 AI" icon="brain" href="/persona/soul-md">
+    페르소나 설정, 메모리 시스템. AI가 **나를 기억하고 내 말투로** 대화하게 만듭니다.
+  </Card>
+  <Card title="Part 5-6: 자동화" icon="bolt" href="/skills/clawhub">
+    ClawHub 스킬, 하트비트, 크론잡. **AI가 알아서** 이메일 체크, 일정 알림, 브리핑합니다.
+  </Card>
+  <Card title="Part 7-9: 확장" icon="puzzle-piece" href="/nodes/pairing">
+    디바이스 페어링, 메시징 심화, 브라우저 자동화. AI의 **손발**을 만들어줍니다.
+  </Card>
+  <Card title="Part 10-11: 개발 & 보안" icon="shield" href="/coding/claude-code">
+    코딩 에이전트, GitHub 연동, 실행 정책, 프라이버시. **안전하게** 파워를 극대화합니다.
+  </Card>
+  <Card title="Part 12-13: 실전 & 로드맵" icon="map" href="/practice/email-management">
+    이메일, 캘린더, 홈 자동화 등 **검증된 워크플로우**와 학습 경로입니다.
+  </Card>
+</CardGroup>
+
+## 빠른 시작
+
+<Steps>
+  <Step title="설치 (5분)">
+    ```bash
+    npm install -g openclaw
+    openclaw init
+    ```
+  </Step>
+  <Step title="Telegram 연동 (3분)">
+    ```bash
+    openclaw config telegram --token YOUR_BOT_TOKEN
+    openclaw gateway start
+    ```
+  </Step>
+  <Step title="첫 대화">
+    Telegram에서 봇에게 DM: **"안녕, 넌 누구야?"**
+  </Step>
+  <Step title="페르소나 설정 (선택)">
+    `SOUL.md`를 열어 AI의 이름, 성격, 말투를 바꿔보세요.
+  </Step>
+</Steps>
+
+<Tip>
+  설치만 하면 바로 쓸 수 있습니다. 하지만 **SOUL.md와 MEMORY.md를 설정하는 순간**, 
+  "범용 챗봇"이 **"나만의 AI"**로 바뀝니다. Part 3부터 읽어보세요.
+</Tip>
+
+## 커뮤니티
+
+<CardGroup cols={3}>
+  <Card title="공식 문서" icon="book" href="https://docs.openclaw.ai">
+    docs.openclaw.ai
+  </Card>
+  <Card title="Discord" icon="discord" href="https://discord.gg/clawd">
+    discord.gg/clawd
+  </Card>
+  <Card title="스킬 마켓" icon="store" href="https://clawhub.com">
+    clawhub.com
+  </Card>
+</CardGroup>

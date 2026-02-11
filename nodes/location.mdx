@@ -1,0 +1,102 @@
+---
+title: "위치 추적"
+description: "노드의 GPS 위치 가져오기"
+---
+
+# 위치 추적
+
+페어링된 모바일 노드에서 **GPS 위치**를 가져올 수 있습니다.
+위치 기반 리마인더, 날씨 확인, 이동 추적에 활용합니다.
+
+## 위치 가져오기
+
+```bash
+openclaw nodes location --node "my-iphone"
+```
+
+AI 도구:
+
+```
+nodes.location_get(
+  node="my-iphone",
+  desiredAccuracy="balanced"
+)
+```
+
+## 정확도 설정
+
+| 옵션 | 정확도 | 배터리 | 용도 |
+|------|--------|--------|------|
+| `coarse` | ~1km | 최소 | 도시/지역 수준 |
+| `balanced` | ~100m | 보통 | 일반 위치 확인 |
+| `precise` | ~10m | 높음 | 정확한 위치 필요 시 |
+
+```bash
+# 대략적 위치 (배터리 절약)
+openclaw nodes location --node "my-iphone" --accuracy coarse
+
+# 정밀 위치
+openclaw nodes location --node "my-iphone" --accuracy precise
+```
+
+<Tip>
+대부분의 경우 `balanced`면 충분합니다.
+건물 수준의 정확도가 필요할 때만 `precise`를 사용하세요.
+</Tip>
+
+## 활용 사례
+
+<CardGroup cols={2}>
+  <Card title="🌤️ 현재 위치 날씨" icon="cloud-sun">
+    위치 기반으로 정확한 날씨 정보 제공
+  </Card>
+  <Card title="📍 위치 기반 리마인더" icon="location-dot">
+    특정 장소 근처에서 할 일 알림
+  </Card>
+  <Card title="🚗 이동 추적" icon="car">
+    출퇴근 시간 추적, 도착 예정 알림
+  </Card>
+  <Card title="🏪 주변 검색" icon="magnifying-glass-location">
+    현재 위치 기준 주변 맛집, 편의점 등 검색
+  </Card>
+</CardGroup>
+
+## 위치 기반 자동화 예시
+
+```
+사용자: "회사 근처에 가면 택배 찾으라고 알려줘"
+→ AI가 HEARTBEAT.md에 추가:
+
+## 임시: 위치 체크
+- [ ] 위치 확인 → 회사(37.5xxx, 127.0xxx) 500m 이내면 "택배 찾으세요!" 알림
+```
+
+## 날씨 연동
+
+```
+사용자: "지금 내 위치 날씨 어때?"
+→ AI:
+  1. nodes.location_get(node="my-iphone")
+  2. web_search("weather 37.5 127.0")
+  3. "현재 위치(강남구) 기온 5°C, 맑음. 오후부터 흐려져요"
+```
+
+<Warning>
+위치 정보는 민감한 개인정보입니다.
+위치 데이터가 메모리 파일에 과도하게 기록되지 않도록 주의하세요.
+</Warning>
+
+## 캐시와 타임아웃
+
+```
+nodes.location_get(
+  node="my-iphone",
+  maxAgeMs=300000,       # 5분 이내 캐시 허용
+  locationTimeoutMs=10000  # 10초 타임아웃
+)
+```
+
+<Info>
+`maxAgeMs`를 설정하면 최근에 가져온 위치를 재사용합니다.
+GPS 수신이 어려운 실내에서 유용합니다.
+</Info>

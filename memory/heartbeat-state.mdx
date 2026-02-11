@@ -1,0 +1,77 @@
+---
+title: "하트비트 상태 추적"
+description: "heartbeat-state.json으로 체크 이력 관리하기"
+---
+
+# 하트비트 상태 추적
+
+`memory/heartbeat-state.json`은 AI가 마지막으로 각 작업을 체크한 시간을 추적합니다.
+이를 통해 같은 작업을 중복 실행하지 않습니다.
+
+## 파일 구조
+
+```json
+{
+  "lastChecks": {
+    "email": 1707620400,
+    "calendar": 1707616800,
+    "weather": 1707613200,
+    "git": 1707620400
+  },
+  "lastNotification": {
+    "email": 1707620400,
+    "calendar": 1707606000
+  }
+}
+```
+
+## 동작 원리
+
+<Steps>
+  <Step title="하트비트 트리거">
+    설정된 간격(기본 30분)으로 AI가 깨어납니다.
+  </Step>
+  <Step title="HEARTBEAT.md 읽기">
+    체크리스트를 확인합니다.
+  </Step>
+  <Step title="상태 확인">
+    `heartbeat-state.json`에서 마지막 체크 시간을 확인합니다.
+  </Step>
+  <Step title="필요한 작업만 실행">
+    충분한 시간이 지난 작업만 실행합니다.
+  </Step>
+  <Step title="상태 업데이트">
+    완료 후 `heartbeat-state.json`을 갱신합니다.
+  </Step>
+</Steps>
+
+## 체크 주기 예시
+
+```markdown
+# HEARTBEAT.md
+체크 주기:
+- 이메일: 1시간마다
+- 캘린더: 2시간마다  
+- 날씨: 6시간마다
+- git 상태: 4시간마다
+```
+
+<Info>
+하트비트 자체는 30분마다 실행되지만, heartbeat-state.json을 통해
+각 작업의 실행 주기를 개별적으로 관리할 수 있습니다.
+</Info>
+
+## 수동 리셋
+
+특정 체크를 강제로 다시 실행하고 싶다면:
+
+```bash
+# heartbeat-state.json에서 해당 키의 타임스탬프를 0으로
+# 또는 AI에게 요청
+"이메일 체크 상태 리셋하고 지금 바로 체크해줘"
+```
+
+<Tip>
+heartbeat-state.json은 AI가 자동으로 관리합니다.
+직접 편집할 일은 거의 없지만, 구조를 이해하면 디버깅에 도움이 됩니다.
+</Tip>

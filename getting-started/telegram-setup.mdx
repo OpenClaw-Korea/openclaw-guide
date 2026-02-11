@@ -1,0 +1,128 @@
+---
+title: "Telegram 연동"
+description: "BotFather로 텔레그램 봇 만들고 OpenClaw에 연결하기"
+---
+
+# Telegram 연동
+
+Telegram은 OpenClaw와 가장 궁합이 좋은 메신저입니다.
+봇 API가 강력하고, 설정이 간단합니다.
+
+## BotFather로 봇 생성
+
+<Steps>
+  <Step title="BotFather 검색">
+    Telegram에서 [@BotFather](https://t.me/BotFather)를 검색합니다.
+  </Step>
+  <Step title="새 봇 만들기">
+    `/newbot` 명령어를 입력합니다.
+  </Step>
+  <Step title="이름 설정">
+    봇의 표시 이름을 입력합니다 (예: "My AI Assistant").
+  </Step>
+  <Step title="유저네임 설정">
+    봇의 유저네임을 설정합니다 (예: `my_ai_bot`). `_bot`으로 끝나야 합니다.
+  </Step>
+  <Step title="토큰 복사">
+    BotFather가 발급한 토큰을 복사합니다.
+    ```
+    123456789:ABCDefGhIjKlMnOpQrStUvWxYz
+    ```
+  </Step>
+</Steps>
+
+## OpenClaw에 연결
+
+```bash
+# 토큰 설정
+openclaw config set telegram.token "YOUR_BOT_TOKEN"
+
+# 또는 config.yaml에 직접 추가
+```
+
+```yaml
+# config.yaml
+channels:
+  telegram:
+    token: "123456789:ABCDefGhIjKlMnOpQrStUvWxYz"
+    dm:
+      allowFrom:
+        - "YOUR_TELEGRAM_USER_ID"
+```
+
+<Info>
+자신의 Telegram User ID를 알려면 [@userinfobot](https://t.me/userinfobot)에게 메시지를 보내세요.
+</Info>
+
+## DM 보안 설정
+
+```yaml
+telegram:
+  dm:
+    allowFrom:
+      - "123456789"     # 나만 허용
+    requirePairing: true  # 새 사용자는 페어링 코드 필요
+```
+
+<Warning>
+`allowFrom`을 설정하지 않으면 누구나 봇에게 메시지를 보낼 수 있습니다.
+반드시 자신의 User ID만 허용하세요.
+</Warning>
+
+## 봇 프로필 꾸미기
+
+BotFather에서 추가 설정:
+
+```
+/setdescription - 봇 설명 설정
+/setabouttext   - About 텍스트
+/setuserpic     - 프로필 사진
+/setcommands    - 명령어 메뉴
+```
+
+## Telegram 고급 기능
+
+<CardGroup cols={2}>
+  <Card title="인라인 버튼" icon="grid">
+    OpenClaw는 인라인 키보드 버튼을 지원합니다.
+  </Card>
+  <Card title="음성 메시지" icon="microphone">
+    음성 메시지를 보내면 AI가 텍스트로 변환하여 응답합니다.
+  </Card>
+  <Card title="파일 전송" icon="file">
+    이미지, 문서, 파일을 봇에게 보낼 수 있습니다.
+  </Card>
+  <Card title="리액션" icon="face-smile">
+    AI가 메시지에 이모지 리액션을 남길 수 있습니다.
+  </Card>
+</CardGroup>
+
+## 그룹에 봇 추가
+
+1. 그룹에 봇을 초대합니다
+2. 봇을 관리자로 설정합니다
+3. BotFather에서 Group Privacy를 비활성화합니다: `/setprivacy` → `Disable`
+4. config에 그룹 설정 추가:
+
+```yaml
+telegram:
+  groups:
+    - chatId: "-1001234567890"
+      respondTo: mentions  # mentions | all | none
+```
+
+<Tip>
+그룹에서는 `respondTo: mentions`가 안전합니다.
+AI가 모든 메시지에 반응하면 대화가 어색해질 수 있습니다.
+</Tip>
+
+## 테스트
+
+```bash
+# Gateway 재시작
+openclaw gateway restart
+
+# 봇에게 DM 보내기
+# → "안녕!" 전송
+# → AI 응답 확인
+```

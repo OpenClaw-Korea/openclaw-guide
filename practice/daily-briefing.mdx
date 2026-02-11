@@ -1,0 +1,112 @@
+---
+title: "데일리 브리핑"
+description: "크론잡으로 매일 아침 요약을 자동 발송하기"
+---
+
+# 데일리 브리핑
+
+매일 아침 이메일, 캘린더, 날씨, 뉴스를 한 번에 요약받으세요.
+크론잡 하나로 나만의 모닝 브리핑을 자동화할 수 있습니다.
+
+## 크론잡 설정
+
+```bash
+openclaw cron add --name "morning-briefing" \
+  --cron "0 8 * * *" \
+  --message "아침 브리핑 해줘: 1) 오늘 캘린더 일정 2) 안 읽은 중요 이메일 3) 서울 날씨 4) AI/개발 주요 뉴스 2-3개. 간결하게 정리해서 보내줘." \
+  --announce --session isolated \
+  --model "anthropic/claude-sonnet-4-20250514"
+```
+
+<Info>
+`--announce`는 결과를 메시징 채널(Telegram 등)로 자동 전송합니다.
+`--session isolated`는 메인 세션 히스토리를 오염시키지 않습니다.
+</Info>
+
+## 브리핑 구성 요소
+
+### 캘린더
+
+```bash
+# 오늘 일정 조회
+gog calendar list --today
+
+# 이번 주 일정
+gog calendar list --days 7
+```
+
+### 이메일
+
+```bash
+# 어젯밤 이후 안 읽은 메일
+gog gmail list --unread --after yesterday --limit 10
+```
+
+### 날씨
+
+```
+web_search("서울 오늘 날씨")
+→ 기온, 강수 확률, 미세먼지 요약
+```
+
+### 뉴스
+
+```
+web_search("AI tech news today", freshness: "pd")
+→ 주요 헤드라인 2-3개 요약
+```
+
+## 실제 출력 예시
+
+```
+☀️ 2월 11일 화요일 아침 브리핑
+
+📅 오늘 일정
+• 10:00 팀 스탠드업 (Zoom)
+• 14:00 디자인 리뷰
+• 17:30 치과 예약
+
+📧 이메일 (3건)
+• AWS — 결제 완료 ($45.20)
+• 김팀장 — Q1 목표 리뷰 요청 ⚡
+• GitHub — dependabot 알림 2건
+
+🌤️ 날씨
+서울 -2°C → 5°C, 맑음, 미세먼지 보통
+
+📰 뉴스
+• OpenAI, GPT-5 출시 일정 발표
+• Rust 2025 에디션 로드맵 공개
+```
+
+## 커스터마이징
+
+### 주말 브리핑
+
+```bash
+openclaw cron add --name "weekend-briefing" \
+  --cron "0 10 * * 0,6" \
+  --message "주말 브리핑: 날씨, 이번 주말 일정, 재미있는 테크 뉴스 1개만 간단히" \
+  --announce --session isolated
+```
+
+### 특정 주제 추가
+
+브리핑에 원하는 항목을 자유롭게 추가하세요:
+
+```
+"... 그리고 비트코인 현재 시세도 알려줘"
+"... AAPL 주가도 체크해줘"
+"... 오늘 프로야구 경기 일정도 넣어줘"
+```
+
+<Tip>
+모델은 `claude-sonnet`으로 충분합니다. 브리핑처럼 정형화된 작업에
+Opus를 쓰면 비용 대비 효과가 낮습니다.
+</Tip>
+
+<Warning>
+크론잡은 지정된 시간에 세션을 새로 시작합니다.
+메인 세션의 대화 맥락에 접근할 수 없으므로,
+프롬프트에 필요한 정보를 모두 명시하세요.
+</Warning>

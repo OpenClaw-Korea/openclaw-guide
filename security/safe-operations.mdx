@@ -1,0 +1,152 @@
+---
+title: "안전한 운영"
+description: "실수를 방지하고 안전하게 OpenClaw를 운영하는 방법"
+---
+
+# 안전한 운영
+
+AI가 시스템을 제어할 때는 **안전장치**가 필수입니다.
+OpenClaw의 안전한 운영 원칙과 설정을 알아보세요.
+
+## trash > rm
+
+파일 삭제 시 `rm` 대신 `trash`를 사용하면 복구가 가능합니다.
+
+```bash
+# ❌ 위험 - 영구 삭제
+rm -rf ./build
+
+# ✅ 안전 - 휴지통으로 이동 (복구 가능)
+trash ./build
+```
+
+AGENTS.md에서 이 규칙을 명시하세요:
+
+```markdown
+## 안전 규칙
+- 파일 삭제는 항상 `trash` 사용 (`rm` 금지)
+- `sudo` 명령 실행 전 반드시 확인
+- 프로덕션 환경 명령은 반드시 사용자 승인 후 실행
+```
+
+<Info>
+macOS에서는 `brew install trash`로 설치할 수 있습니다.
+`trash`는 Finder 휴지통으로 파일을 보냅니다.
+</Info>
+
+## 확인 절차 (Ask Before Acting)
+
+### AGENTS.md에 규칙 설정
+
+```markdown
+## 안전
+
+**자유롭게 해도 되는 것:**
+- 파일 읽기, 탐색, 정리, 학습
+- 웹 검색, 캘린더 확인
+- 워크스페이스 내 작업
+
+**먼저 물어볼 것:**
+- 이메일, 트윗, 공개 게시물 보내기
+- 머신을 떠나는 모든 것
+- 확실하지 않은 모든 것
+```
+
+### exec ask 모드
+
+```yaml
+exec:
+  ask: always  # 모든 명령 실행 전 확인
+```
+
+이 설정에서 OpenClaw는 명령 실행 전 사용자에게 물어봅니다:
+
+```
+🔧 실행하려는 명령:
+npm run deploy --production
+
+실행할까요? (y/n)
+```
+
+## 외부 액션 승인
+
+AI가 **외부로 나가는 액션**은 특별히 주의해야 합니다:
+
+### 메시지 전송
+
+```markdown
+# AGENTS.md에 명시
+**먼저 물어볼 것:**
+- 이메일 보내기
+- iMessage 보내기
+- SNS 게시
+- 공개 채널 메시지
+```
+
+OpenClaw는 이 규칙을 따라 전송 전 확인합니다:
+
+```
+📧 이메일을 보내려고 합니다:
+받는 사람: team@company.com
+제목: 주간 리포트
+내용: [요약]
+
+보낼까요?
+```
+
+### API 호출
+
+외부 API 호출도 마찬가지입니다:
+- 결제 API → 반드시 확인
+- 배포 명령 → 반드시 확인
+- 데이터 삭제 API → 반드시 확인
+
+## 안전한 파일 작업
+
+### 백업 후 수정
+
+```markdown
+# AGENTS.md에 추가
+중요한 설정 파일 수정 시 백업본을 먼저 만들어라:
+cp config.yaml config.yaml.bak
+```
+
+### git으로 변경 추적
+
+```bash
+# 작업 전 커밋
+git add -A && git commit -m "checkpoint before AI changes"
+
+# AI 작업 후 diff 확인
+git diff
+```
+
+<Tip>
+프로젝트 디렉토리에서 작업할 때는 항상 git을 활용하세요.
+AI의 변경사항을 쉽게 확인하고 되돌릴 수 있습니다.
+</Tip>
+
+## 권한 분리 체크리스트
+
+<Steps>
+  <Step title="exec 보안 정책 설정">
+    `allowlist` 모드로 필요한 명령어만 허용
+  </Step>
+  <Step title="도구 필터링 적용">
+    채널별로 사용 가능한 도구 제한
+  </Step>
+  <Step title="AGENTS.md 안전 규칙 작성">
+    AI가 따를 행동 규칙 명시
+  </Step>
+  <Step title="trash 설치 및 설정">
+    `rm` 대신 `trash` 사용 규칙
+  </Step>
+  <Step title="외부 액션 승인 규칙 설정">
+    메시지, 이메일, 배포 등 외부 액션은 확인 필수
+  </Step>
+</Steps>
+
+<Warning>
+AI는 명시된 규칙을 잘 따르지만, 100% 완벽하지 않습니다.
+중요한 작업에는 항상 사람의 확인을 거치는 것이 안전합니다.
+</Warning>

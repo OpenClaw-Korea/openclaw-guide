@@ -1,0 +1,100 @@
+---
+title: "참고 자료"
+description: "OpenClaw 관련 공식 문서, 커뮤니티, 리소스 모음"
+---
+
+# 참고 자료
+
+OpenClaw를 더 깊이 활용하기 위한 공식 자료와 커뮤니티 링크입니다.
+
+## 공식 리소스
+
+### 문서
+
+| 리소스 | URL | 설명 |
+|--------|-----|------|
+| 공식 문서 | [docs.openclaw.ai](https://docs.openclaw.ai) | 설치, 설정, API 레퍼런스 |
+| GitHub | [github.com/openclaw/openclaw](https://github.com/openclaw/openclaw) | 소스 코드, 이슈 트래커 |
+| ClawHub | [clawhub.com](https://clawhub.com) | 스킬 마켓플레이스 |
+
+### 커뮤니티
+
+| 채널 | URL | 용도 |
+|------|-----|------|
+| Discord | [discord.gg/clawd](https://discord.gg/clawd) | 실시간 토론, 질문, 쇼케이스 |
+| GitHub Discussions | [github.com/openclaw/openclaw/discussions](https://github.com/openclaw/openclaw/discussions) | 장문 토론, RFC |
+
+## 핵심 개념 문서
+
+빠르게 찾아보는 핵심 파일들:
+
+### 설정 파일
+
+```
+~/clawd/
+├── AGENTS.md      # AI 행동 규칙 (가장 중요!)
+├── SOUL.md        # AI 성격 정의
+├── USER.md        # 사용자 프로필
+├── TOOLS.md       # 로컬 도구 설정
+├── MEMORY.md      # 장기 기억
+├── HEARTBEAT.md   # 하트비트 체크리스트
+└── memory/        # 일일 기록
+    └── YYYY-MM-DD.md
+```
+
+### CLI 치트시트
+
+```bash
+# Gateway
+openclaw gateway start|stop|restart|status
+
+# 크론잡
+openclaw cron list
+openclaw cron add --name "이름" --cron "표현식" --message "프롬프트"
+openclaw cron remove --name "이름"
+
+# 스킬
+openclaw skill list
+openclaw skill install <name>
+
+# 노드
+openclaw node status
+openclaw node approve <id>
+```
+
+## 관련 도구
+
+OpenClaw와 함께 자주 사용하는 외부 도구들:
+
+| 도구 | 설치 | 용도 |
+|------|------|------|
+| gog | `pip install gog` | Gmail, Calendar, Drive |
+| imsg | `brew install nicklama/tap/imsg` | iMessage 제어 |
+| remindctl | `brew install nicklama/tap/remindctl` | Apple 미리알림 |
+
+## 학습 경로
+
+```
+초급 (1-4주)          중급 (1-3개월)           고급 (3개월+)
+설치 → 대화 →        스킬 → 자동화 →         커스텀 스킬 →
+파일 작업 → 개인화    크론잡 → 노드            멀티에이전트 → 기여
+```
+
+자세한 내용은 각 로드맵을 참고하세요:
+- [초급자 로드맵](/roadmap/beginner)
+- [중급자 로드맵](/roadmap/intermediate)
+- [고급자 로드맵](/roadmap/advanced)
+
+## 문제 해결
+
+막혔을 때 확인할 순서:
+
+1. **공식 문서** — [docs.openclaw.ai](https://docs.openclaw.ai)에서 검색
+2. **GitHub Issues** — 같은 문제를 겪은 사람이 있는지 확인
+3. **Discord #help** — 커뮤니티에 질문
+4. **OpenClaw에게 질문** — "이 에러 뭐야?" 라고 물어보기
+
+<Tip>
+OpenClaw 자체에게 OpenClaw 사용법을 물어볼 수 있습니다.
+"크론잡 어떻게 설정해?"라고 물어보면 바로 알려줍니다.
+</Tip>

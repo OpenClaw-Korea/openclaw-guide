@@ -1,0 +1,109 @@
+---
+title: "리서치"
+description: "web_search + web_fetch 조합으로 정보를 수집하고 정리하기"
+---
+
+# 리서치
+
+OpenClaw는 **web_search**와 **web_fetch**를 조합해 실시간 정보를 수집합니다.
+"이거 좀 찾아봐"라고 말하면 검색부터 요약까지 한 번에 처리합니다.
+
+## 기본 도구
+
+| 도구 | 역할 |
+|------|------|
+| `web_search` | Brave Search API로 검색 (제목, URL, 스니펫 반환) |
+| `web_fetch` | URL에서 본문 추출 (HTML → 마크다운 변환) |
+
+<Info>
+별도 설치 없이 바로 사용 가능합니다. OpenClaw 내장 도구입니다.
+</Info>
+
+## 기본 사용법
+
+### 단순 검색
+
+```
+"2025년 AI 트렌드 찾아봐"
+"Next.js 15 새로운 기능 알려줘"
+"서울 이번 주말 날씨 어때?"
+```
+
+OpenClaw 내부 동작:
+```
+1. web_search("2025 AI trends") → 상위 결과 수집
+2. 관련성 높은 URL 2-3개 선별
+3. web_fetch(url) → 본문 추출
+4. 핵심 내용 요약해서 전달
+```
+
+### 심층 리서치
+
+```
+"React vs Vue 2025년 기준으로 비교 분석해줘"
+"OpenAI o3 모델 성능 벤치마크 정리해줘"
+```
+
+심층 리서치에서는 여러 소스를 교차 검증합니다:
+```
+1. web_search로 다양한 관점의 글 수집
+2. web_fetch로 각 글의 핵심 추출
+3. 정보를 비교·대조해서 균형 잡힌 요약 생성
+4. 출처 URL 포함
+```
+
+<Tip>
+"출처도 같이 알려줘"라고 하면 참고한 URL 목록을 정리해줍니다.
+</Tip>
+
+## 실전 패턴
+
+### 기술 조사 보고서
+
+```
+사용자: "Rust 웹 프레임워크 비교해서 정리해줘"
+
+OpenClaw 동작:
+1. web_search("Rust web framework comparison 2025")
+2. Actix, Axum, Rocket 등 주요 프레임워크 정보 수집
+3. 성능, 생태계, 학습 곡선 기준으로 비교표 작성
+4. 마크다운 파일로 저장 (선택)
+```
+
+### 뉴스 모니터링
+
+```
+사용자: "OpenAI 최근 뉴스 요약해줘"
+
+→ web_search로 최신 뉴스 수집 (freshness: "pw")
+→ 주요 3-5개 기사 요약
+→ Telegram으로 전달
+```
+
+### 경쟁사 분석
+
+```
+사용자: "Cursor vs Windsurf 최신 비교 찾아줘"
+
+→ 여러 리뷰 사이트 크롤링
+→ 기능, 가격, 사용자 평가 종합
+→ 구조화된 비교 리포트 생성
+```
+
+<Warning>
+web_fetch는 로그인이 필요한 페이지나 JavaScript로 렌더링되는 SPA에서는
+내용을 가져오지 못할 수 있습니다. 이 경우 `browser` 도구를 사용하세요.
+</Warning>
+
+## 자동화
+
+### 주간 기술 트렌드 리포트
+
+```bash
+openclaw cron add --name "weekly-tech" \
+  --cron "0 9 * * 1" \
+  --message "이번 주 AI/개발 주요 뉴스 5개 찾아서 요약해줘" \
+  --announce --session isolated
+```
+
+매주 월요일 오전 9시에 기술 트렌드 요약을 받아볼 수 있습니다.

@@ -1,0 +1,90 @@
+---
+title: "하트비트"
+description: "AI의 주기적 체크 시스템 이해하기"
+---
+
+# 하트비트
+
+하트비트는 OpenClaw의 **능동적 행동 엔진**입니다.
+설정된 간격으로 AI가 깨어나서 HEARTBEAT.md를 읽고, 필요한 작업을 수행합니다.
+
+## 기본 동작
+
+```
+[30분 간격으로]
+1. AI 깨어남
+2. HEARTBEAT.md 읽기
+3. 체크리스트 확인
+4. heartbeat-state.json으로 마지막 체크 시간 확인
+5. 필요한 작업 수행
+6. 결과에 따라 사용자에게 알림 or HEARTBEAT_OK
+```
+
+## 설정
+
+```yaml
+# config.yaml
+heartbeat:
+  enabled: true
+  intervalMinutes: 30
+  prompt: "Read HEARTBEAT.md if it exists. Follow it strictly."
+```
+
+## HEARTBEAT.md 예시
+
+```markdown
+# HEARTBEAT.md
+
+## 체크 항목 (돌아가며 하루 2-4회)
+- [ ] 이메일 - 긴급한 안 읽은 메시지?
+- [ ] 캘린더 - 24-48시간 내 이벤트?
+- [ ] 날씨 - 급변 예보?
+
+## 조용한 시간
+- 23:00-08:00: 긴급 아니면 알림 금지
+
+## 연락할 때
+- 중요 이메일 도착
+- 캘린더 이벤트 2시간 전
+- 8시간 이상 무소식
+
+## 조용히 있을 때 (HEARTBEAT_OK)
+- 새로운 거 없을 때
+- 30분 전에 방금 체크했을 때
+```
+
+<Info>
+HEARTBEAT_OK는 "할 일 없음"을 의미합니다.
+사용자에게 알림을 보내지 않고 조용히 돌아갑니다.
+</Info>
+
+## 하트비트에서 할 수 있는 것
+
+<CardGroup cols={2}>
+  <Card title="📧 이메일 체크" icon="envelope">
+    새 메일 확인, 중요 메일 알림
+  </Card>
+  <Card title="📅 캘린더 알림" icon="calendar">
+    다가오는 일정 미리 알림
+  </Card>
+  <Card title="🔧 시스템 점검" icon="wrench">
+    git 상태, 서버 상태 확인
+  </Card>
+  <Card title="🧹 메모리 정리" icon="broom">
+    일일 노트 검토, MEMORY.md 업데이트
+  </Card>
+</CardGroup>
+
+## 하트비트 간격 가이드
+
+| 간격 | 용도 | API 비용 |
+|------|------|---------|
+| 15분 | 실시간 모니터링 필요 시 | 높음 |
+| 30분 | 일반적인 사용 (권장) | 중간 |
+| 60분 | 가벼운 사용 | 낮음 |
+| 120분 | 최소한의 체크 | 매우 낮음 |
+
+<Warning>
+하트비트 간격이 짧을수록 API 비용이 증가합니다.
+30분이 비용과 반응성의 좋은 균형점입니다.
+</Warning>

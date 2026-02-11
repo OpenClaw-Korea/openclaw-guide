@@ -1,0 +1,83 @@
+---
+title: "인기 스킬"
+description: "추천 OpenClaw 스킬 목록"
+---
+
+# 인기 스킬
+
+커뮤니티에서 많이 사용하는 스킬들을 소개합니다.
+
+## 생산성
+
+<CardGroup cols={2}>
+  <Card title="📧 Email Checker" icon="envelope">
+    이메일을 주기적으로 체크하고 중요한 것만 알려줍니다.
+    하트비트와 연동하여 자동 모니터링합니다.
+  </Card>
+  <Card title="📅 Calendar Sync" icon="calendar">
+    Apple Calendar / Google Calendar와 연동합니다.
+    다가오는 일정을 미리 알려줍니다.
+  </Card>
+  <Card title="✅ Reminders" icon="bell">
+    Apple Reminders (`remindctl`)와 연동합니다.
+    "내일 3시에 약속 리마인드해줘" 같은 자연어 입력을 지원합니다.
+  </Card>
+  <Card title="📝 Note Taker" icon="note-sticky">
+    대화 내용을 자동으로 정리하여 노트를 생성합니다.
+  </Card>
+</CardGroup>
+
+## 개발
+
+<CardGroup cols={2}>
+  <Card title="🔀 Git Watcher" icon="code-branch">
+    저장소 상태를 모니터링하고 PR/이슈 알림을 전달합니다.
+  </Card>
+  <Card title="🐛 Bug Reporter" icon="bug">
+    에러 로그를 분석하고 구조화된 버그 리포트를 생성합니다.
+  </Card>
+  <Card title="📊 Deploy Monitor" icon="server">
+    배포 상태를 체크하고 이상 시 알림합니다.
+  </Card>
+  <Card title="🧪 Test Runner" icon="vial">
+    테스트를 실행하고 결과를 요약합니다.
+  </Card>
+</CardGroup>
+
+## 라이프스타일
+
+<CardGroup cols={2}>
+  <Card title="🌤 Weather Alert" icon="cloud-sun">
+    날씨 변화를 감지하고 우산/외투 알림을 보냅니다.
+  </Card>
+  <Card title="🎵 Music Recommender" icon="music">
+    기분과 상황에 맞는 음악을 추천합니다.
+  </Card>
+  <Card title="🏠 Home Assistant" icon="house">
+    HomeKit/Home Assistant와 연동하여 스마트홈을 제어합니다.
+  </Card>
+  <Card title="📰 News Digest" icon="newspaper">
+    관심 분야의 뉴스를 수집하여 아침 브리핑을 생성합니다.
+  </Card>
+</CardGroup>
+
+## 설치 예시
+
+```bash
+# 이메일 체크 스킬 설치
+openclaw skills install email-checker
+
+# 설치 후 TOOLS.md에 설정 추가
+cat >> TOOLS.md << 'TOOLS'
+
+## Email Checker
+- IMAP Host: imap.gmail.com
+- Email: your@gmail.com
+- App Password: xxxx-xxxx-xxxx-xxxx
+TOOLS
+```
+
+<Tip>
+처음 시작한다면 **Calendar Sync + Weather Alert + Reminders** 조합을 추천합니다.
+일상에서 바로 체감할 수 있는 자동화입니다.
+</Tip>

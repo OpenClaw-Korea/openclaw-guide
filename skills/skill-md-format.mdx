@@ -1,0 +1,87 @@
+---
+title: "SKILL.md 형식"
+description: "효과적인 SKILL.md 작성법"
+---
+
+# SKILL.md 형식
+
+SKILL.md는 AI에게 스킬의 사용법을 가르치는 **지시서**입니다.
+잘 작성된 SKILL.md = 잘 동작하는 스킬입니다.
+
+## 권장 구조
+
+```markdown
+# [스킬 이름]
+
+## 목적
+[한 문장으로 스킬의 역할 설명]
+
+## 사용 시점
+[언제 이 스킬을 사용해야 하는지]
+
+## 사용법
+[사용자가 어떻게 트리거하는지]
+
+## 도구 / 명령어
+[사용하는 외부 도구나 API]
+
+## 설정
+[필요한 설정 정보]
+
+## 규칙
+[AI가 따라야 할 규칙]
+
+## 예시
+[입출력 예시]
+```
+
+## 좋은 SKILL.md의 특징
+
+<CardGroup cols={2}>
+  <Card title="명확한 트리거" icon="bullseye">
+    어떤 사용자 요청에 반응해야 하는지 명확합니다.
+  </Card>
+  <Card title="구체적 예시" icon="code">
+    입력과 예상 출력의 예시가 포함됩니다.
+  </Card>
+  <Card title="에러 처리" icon="triangle-exclamation">
+    실패 시 어떻게 행동해야 하는지 정의합니다.
+  </Card>
+  <Card title="간결함" icon="minimize">
+    필요한 정보만 담아 토큰을 절약합니다.
+  </Card>
+</CardGroup>
+
+## 안티패턴
+
+<Warning>
+피해야 할 SKILL.md 패턴:
+- ❌ 너무 긴 설명 (500줄+) → AI가 핵심을 놓침
+- ❌ 모호한 트리거 → 엉뚱한 상황에서 활성화
+- ❌ 예시 없음 → AI가 출력 형식을 추측
+- ❌ 설정 누락 → 설치 후 동작하지 않음
+</Warning>
+
+## TOOLS.md와의 관계
+
+| SKILL.md | TOOLS.md |
+|----------|----------|
+| 스킬의 기능과 사용법 | 로컬 환경 설정 |
+| 공유 가능 (범용) | 개인 환경 (비공개) |
+| "이 도구는 이렇게 사용해" | "내 API 키는 xxx, 내 카메라 이름은 yyy" |
+
+```markdown
+# SKILL.md (공유됨)
+## 설정
+TOOLS.md에 API 키를 추가하세요.
+
+# TOOLS.md (개인)
+### Weather
+- API Key: abc123
+- Location: Seoul
+```
+
+<Tip>
+스킬은 공유, 환경은 개인. 이 분리를 유지하면
+스킬을 안전하게 공유할 수 있습니다.
+</Tip>

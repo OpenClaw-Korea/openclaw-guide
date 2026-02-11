@@ -1,0 +1,139 @@
+---
+title: "Discord"
+description: "Discord 봇으로 AI와 대화하기"
+---
+
+# Discord
+
+Discord는 **서버 기반 커뮤니티**에서 AI를 활용하기에 좋은 플랫폼입니다.
+여러 채널, 스레드, 역할 기반 권한 관리가 가능합니다.
+
+## 봇 생성
+
+<Steps>
+  <Step title="Developer Portal">
+    [Discord Developer Portal](https://discord.com/developers/applications)에서 **New Application** 클릭
+  </Step>
+  <Step title="봇 추가">
+    왼쪽 메뉴 → Bot → **Add Bot**
+  </Step>
+  <Step title="인텐트 활성화">
+    **Privileged Gateway Intents**에서:
+    - ✅ MESSAGE CONTENT INTENT
+    - ✅ SERVER MEMBERS INTENT (선택)
+  </Step>
+  <Step title="토큰 복사">
+    Bot 섹션에서 **Reset Token** → 토큰 복사
+  </Step>
+  <Step title="OpenClaw에 설정">
+```bash
+openclaw config set discord.token "YOUR_BOT_TOKEN"
+openclaw gateway restart
+```
+  </Step>
+  <Step title="서버에 초대">
+    OAuth2 → URL Generator에서:
+    - Scopes: `bot`
+    - Permissions: `Send Messages`, `Read Message History`, `Add Reactions`, `Attach Files`
+    
+    생성된 URL로 봇을 서버에 초대합니다.
+  </Step>
+</Steps>
+
+## DM vs 서버 채널
+
+<Tabs>
+  <Tab title="DM (1:1)">
+    봇에게 직접 DM을 보내면 개인 비서처럼 사용할 수 있습니다.
+    ```
+    사용자 DM → AI 응답
+    ```
+    가장 프라이빗한 방법입니다.
+  </Tab>
+  <Tab title="서버 채널">
+    특정 채널에서 봇을 사용합니다.
+    ```bash
+    # 특정 채널만 허용
+    openclaw config set discord.channels.allowed "[123456789]"
+    ```
+    그룹 사용에 적합합니다.
+  </Tab>
+</Tabs>
+
+## Discord 전용 기능
+
+### 스레드 관리
+
+```
+message.thread_create(
+  action="thread-create",
+  channelId="123456789",
+  threadName="주간 리포트 토론"
+)
+```
+
+### 리액션
+
+```
+message.react(
+  action="react",
+  messageId="123456789",
+  emoji="✅"
+)
+```
+
+### 채널 관리
+
+```
+message.channel_list(action="channel-list", guildId="123456789")
+message.channel_create(action="channel-create", name="ai-logs", guildId="123456789")
+```
+
+## 포맷팅 주의사항
+
+<Warning>
+Discord에서는 **마크다운 테이블이 지원되지 않습니다**.
+대신 불릿 리스트나 코드 블록을 사용하세요.
+
+여러 링크가 있을 때는 `<https://example.com>`으로 감싸서 임베드를 억제하세요.
+</Warning>
+
+```markdown
+❌ 이렇게 하면 안 됨:
+| 항목 | 값 |
+|------|-----|
+
+✅ 이렇게 해야 함:
+• **항목**: 값
+• **항목2**: 값2
+```
+
+## 그룹 채팅 운영
+
+Discord 서버에서 AI가 모든 메시지를 받는 경우:
+
+```markdown
+# AGENTS.md 그룹 채팅 규칙 적용
+
+## 응답할 때:
+- 직접 멘션 (@봇이름)
+- 질문에 진짜 가치 추가 가능할 때
+
+## 조용히 있을 때:
+- 잡담, 이미 답변된 질문
+- AI 개입이 분위기를 깨뜨릴 때
+```
+
+<Tip>
+Discord에서는 봇 멘션(@) 트리거를 권장합니다.
+모든 메시지에 응답하면 채팅이 어색해질 수 있습니다.
+</Tip>
+
+## 문제 해결
+
+| 증상 | 해결 |
+|------|------|
+| 봇 오프라인 | Gateway 상태 확인, 토큰 유효성 확인 |
+| 메시지 내용이 빈 문자열 | MESSAGE CONTENT INTENT 활성화 확인 |
+| 권한 에러 | 봇 역할 권한 확인 |
+| DM 불가 | 사용자의 DM 설정 확인 |

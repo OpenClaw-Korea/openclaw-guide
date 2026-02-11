@@ -1,0 +1,142 @@
+---
+title: "Claude Code"
+description: "Claude Code 코딩 에이전트 활용하기"
+---
+
+# Claude Code
+
+OpenClaw는 **Claude Code** 모드로 동작할 수 있습니다.
+파일 읽기/쓰기, 셸 명령 실행, Git 관리 등 풀스택 개발이 가능합니다.
+
+## 기본 능력
+
+<CardGroup cols={2}>
+  <Card title="📁 파일 시스템" icon="folder-open">
+    파일 읽기, 쓰기, 편집, 검색
+  </Card>
+  <Card title="💻 셸 실행" icon="terminal">
+    모든 셸 명령어 실행 가능
+  </Card>
+  <Card title="🔀 Git 관리" icon="code-branch">
+    커밋, 브랜치, PR 관리
+  </Card>
+  <Card title="🌐 웹 검색" icon="globe">
+    문서, API 레퍼런스 검색
+  </Card>
+</CardGroup>
+
+## 사용 예시
+
+### 코드 작성
+
+```
+사용자: "Express.js로 TODO API 만들어줘"
+→ AI:
+  1. 프로젝트 구조 생성
+  2. package.json 작성
+  3. 라우터, 컨트롤러, 모델 구현
+  4. 테스트 코드 작성
+  5. npm install && npm test 실행
+```
+
+### 버그 수정
+
+```
+사용자: "이 에러 좀 봐줘: TypeError: Cannot read property..."
+→ AI:
+  1. 에러 스택 트레이스 분석
+  2. 관련 파일 읽기
+  3. 원인 파악
+  4. 코드 수정
+  5. 테스트 실행으로 확인
+```
+
+### 리팩토링
+
+```
+사용자: "src/utils.js 너무 길어. 분리해줘"
+→ AI:
+  1. 파일 분석
+  2. 기능별로 분류
+  3. 개별 모듈로 분리
+  4. import 경로 수정
+  5. 테스트 확인
+```
+
+## 도구 상세
+
+### 파일 읽기
+
+```
+Read(file_path="src/index.js")
+Read(file_path="src/index.js", offset=50, limit=30)  # 50번째 줄부터 30줄
+```
+
+### 파일 쓰기
+
+```
+Write(file_path="src/new-file.js", content="const app = ...")
+```
+
+### 정밀 편집
+
+```
+Edit(
+  file_path="src/index.js",
+  old_string="const port = 3000",
+  new_string="const port = process.env.PORT || 3000"
+)
+```
+
+### 셸 실행
+
+```
+exec(command="npm test")
+exec(command="git status")
+exec(command="find . -name '*.ts' | head -20")
+```
+
+## 모델 선택
+
+| 모델 | 용도 | 비용 |
+|------|------|------|
+| Claude Opus 4 | 복잡한 아키텍처, 대규모 리팩토링 | 높음 |
+| Claude Sonnet 4 | 일반 코딩, 버그 수정 | 중간 |
+
+<Tip>
+일상적인 코딩 작업에는 Sonnet이 충분합니다.
+시스템 설계나 복잡한 디버깅에만 Opus를 사용하세요.
+</Tip>
+
+## 서브에이전트로 코딩 태스크 위임
+
+복잡한 코딩 작업은 서브에이전트에 위임할 수 있습니다:
+
+```
+사용자: "이 프로젝트 전체 테스트 커버리지 올려줘"
+→ 메인 에이전트:
+  서브에이전트 생성 → 코딩 작업 위임
+  → 서브에이전트가 독립적으로 작업
+  → 완료 후 메인 에이전트에 결과 보고
+```
+
+## 안전 가이드
+
+<Warning>
+- 파괴적인 명령 (`rm -rf`, `DROP TABLE`) 실행 전 반드시 확인
+- `trash` > `rm` (복구 가능)
+- 프로덕션 환경에서 직접 실행하지 않기
+- 중요한 변경 전 git commit으로 세이브포인트 생성
+</Warning>
+
+## AGENTS.md에서 코딩 규칙 설정
+
+```markdown
+# AGENTS.md 코딩 섹션
+
+## 코딩 규칙
+- TypeScript 선호
+- ESLint + Prettier 설정 따르기
+- 테스트 없이 커밋하지 않기
+- 커밋 메시지는 conventional commits 형식
+```

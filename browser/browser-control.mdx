@@ -1,0 +1,136 @@
+---
+title: "브라우저 제어"
+description: "AI로 웹 브라우저를 자동화하기"
+---
+
+# 브라우저 제어
+
+OpenClaw는 내장 브라우저를 통해 **웹 자동화**가 가능합니다.
+웹사이트 탐색, 폼 작성, 스크린샷, 데이터 추출 등을 AI가 수행합니다.
+
+## 브라우저 프로필
+
+
+  ### openclaw (격리 브라우저)
+OpenClaw가 관리하는 독립 브라우저입니다.
+```
+browser.start(profile="openclaw")
+browser.open(url="https://example.com", profile="openclaw")
+```
+깨끗한 환경
+로그인 상태 없음
+자동화에 적합
+  
+  ### chrome (Chrome 릴레이)
+실제 Chrome 브라우저를 제어합니다.
+```
+browser.snapshot(profile="chrome")
+```
+기존 로그인 세션 활용
+Chrome 확장 프로그램 필요
+인증이 필요한 사이트에 적합
+  
+
+
+## 기본 사용법
+
+### 페이지 열기
+
+```
+browser.open(url="https://news.ycombinator.com", profile="openclaw")
+```
+
+### 스냅샷 (DOM 구조 캡처)
+
+```
+browser.snapshot(profile="openclaw")
+```
+
+스냅샷은 페이지의 접근성 트리를 반환합니다.
+AI가 이를 읽어서 페이지 내용을 이해합니다.
+
+### 스크린샷
+
+```
+browser.screenshot(profile="openclaw", fullPage=true)
+```
+
+### 액션 실행
+
+```
+# 클릭
+browser.act(request={kind: "click", ref: "e12"}, profile="openclaw")
+
+# 텍스트 입력
+browser.act(request={kind: "type", ref: "e5", text: "검색어"}, profile="openclaw")
+
+# 키 누르기
+browser.act(request={kind: "press", key: "Enter"}, profile="openclaw")
+
+# 호버
+browser.act(request={kind: "hover", ref: "e8"}, profile="openclaw")
+```
+
+<Info>
+`ref`는 스냅샷에서 반환되는 요소 참조 ID입니다.
+스냅샷 → ref 확인 → 액션 실행의 패턴으로 사용합니다.
+</Info>
+
+## 자동화 워크플로우
+
+<Steps>
+  <Step title="페이지 열기">
+    `browser.open(url="...")`
+  </Step>
+  <Step title="스냅샷으로 구조 파악">
+    `browser.snapshot()` → 요소 ref 확인
+  </Step>
+  <Step title="인터랙션">
+    클릭, 입력, 선택 등 수행
+  </Step>
+  <Step title="결과 확인">
+    다시 스냅샷 또는 스크린샷
+  </Step>
+</Steps>
+
+## 실전 예시: 뉴스 수집
+
+```
+사용자: "오늘 해커뉴스 톱 5 뉴스 알려줘"
+→ AI:
+  1. browser.open(url="https://news.ycombinator.com")
+  2. browser.snapshot()
+  3. 스냅샷에서 상위 5개 기사 추출
+  4. 요약해서 전달
+```
+
+## 탭 관리
+
+```
+# 탭 목록
+browser.tabs(profile="openclaw")
+
+# 특정 탭 포커스
+browser.focus(targetId="ABC123")
+
+# 탭 닫기
+browser.close(targetId="ABC123")
+```
+
+<Warning>
+브라우저 자동화는 사이트 이용약관을 위반할 수 있습니다.
+개인 용도로만 사용하고, 과도한 요청은 피하세요.
+</Warning>
+
+## 성능 팁
+
+<CardGroup cols={2}>
+  <Card title="스냅샷 > 스크린샷" icon="bolt">
+    스냅샷이 토큰을 적게 쓰고 더 정확합니다.
+    시각적 확인이 필요할 때만 스크린샷을 쓰세요.
+  </Card>
+  <Card title="web_fetch 먼저" icon="gauge-high">
+    단순 콘텐츠 추출은 `web_fetch`가 훨씬 빠릅니다.
+    브라우저는 JavaScript가 필요한 사이트에만 쓰세요.
+  </Card>
+</CardGroup>

@@ -1,0 +1,135 @@
+---
+title: "도구 필터링"
+description: "특정 도구만 허용하여 AI의 행동 범위를 제한하기"
+---
+
+# 도구 필터링
+
+OpenClaw는 다양한 도구(read, write, exec, browser, message 등)를 제공합니다.
+**도구 필터링**으로 AI가 사용할 수 있는 도구를 제한하여 안전성을 높이세요.
+
+## 도구 목록
+
+OpenClaw에서 사용 가능한 주요 도구:
+
+| 도구 | 기능 | 위험도 |
+|------|------|--------|
+| `read` | 파일 읽기 | 🟢 낮음 |
+| `write` | 파일 쓰기/생성 | 🟡 중간 |
+| `edit` | 파일 수정 | 🟡 중간 |
+| `exec` | 명령어 실행 | 🔴 높음 |
+| `browser` | 브라우저 제어 | 🟡 중간 |
+| `web_search` | 웹 검색 | 🟢 낮음 |
+| `web_fetch` | URL 내용 가져오기 | 🟢 낮음 |
+| `message` | 메시지 전송 | 🟡 중간 |
+| `nodes` | 노드/디바이스 제어 | 🟡 중간 |
+| `canvas` | 캔버스 제어 | 🟢 낮음 |
+| `tts` | 텍스트 음성 변환 | 🟢 낮음 |
+| `image` | 이미지 분석 | 🟢 낮음 |
+
+## 설정 방법
+
+### 허용할 도구만 지정
+
+```yaml
+# config.yaml
+tools:
+  - read
+  - web_search
+  - web_fetch
+  - message
+```
+
+이 설정에서 AI는 **파일 읽기, 웹 검색, URL 가져오기, 메시지 전송**만 할 수 있습니다.
+나머지 도구(write, exec, browser 등)는 사용 불가합니다.
+
+### 채널별 도구 제한
+
+```yaml
+channels:
+  telegram:
+    tools:
+      - read
+      - write
+      - edit
+      - exec
+      - web_search
+      - web_fetch
+      - message
+      - browser
+      - nodes
+  discord:
+    tools:
+      - read
+      - web_search
+      - web_fetch
+      - message
+```
+
+<Info>
+Discord 같은 공개 채널에서는 도구를 최소화하고,
+신뢰할 수 있는 개인 Telegram에서는 더 많은 도구를 허용하는 전략이 효과적입니다.
+</Info>
+
+## 유즈케이스별 추천 설정
+
+### 읽기 전용 어시스턴트
+
+```yaml
+tools:
+  - read
+  - web_search
+  - web_fetch
+  - image
+```
+
+파일 읽기와 웹 검색만 가능합니다. 어떤 것도 수정할 수 없어 가장 안전합니다.
+
+### 개발 어시스턴트
+
+```yaml
+tools:
+  - read
+  - write
+  - edit
+  - exec
+  - web_search
+  - web_fetch
+  - browser
+  - message
+```
+
+### 생활 어시스턴트
+
+```yaml
+tools:
+  - read
+  - write
+  - exec        # remindctl, imsg, gog 실행용
+  - web_search
+  - web_fetch
+  - message
+  - nodes
+  - tts
+```
+
+## 크론잡별 도구 제한
+
+크론잡에서도 도구를 제한할 수 있습니다:
+
+```bash
+openclaw cron add --name "이메일 체크" \
+  --every "2h" \
+  --tools "read,exec,message" \
+  --message "새 이메일 확인해서 중요한 거 알려줘"
+```
+
+<Warning>
+도구 필터링은 **exec 보안 정책**과 함께 사용하세요.
+`exec`를 허용하되 `allowlist`로 실행 가능한 명령어를 제한하는 것이 좋습니다.
+</Warning>
+
+<Tip>
+어떤 도구가 필요한지 모르겠다면, 처음에는 최소한만 허용하고
+필요할 때 하나씩 추가하는 것이 안전합니다.
+</Tip>

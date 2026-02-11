@@ -1,0 +1,198 @@
+---
+title: "크론잡 설정"
+description: "OpenClaw 스케줄러로 예약 작업 만들기"
+---
+
+# 크론잡 설정
+
+OpenClaw의 크론잡은 **정확한 시간에 AI를 깨워** 특정 작업을 수행하게 합니다.
+하트비트와 달리, 크론잡은 독립된 세션에서 실행되며 정밀한 스케줄링이 가능합니다.
+
+## 스케줄 타입
+
+세 가지 방식으로 실행 시간을 지정할 수 있습니다:
+
+<Tabs>
+  <Tab title="--at (일회성)">
+```bash
+# 특정 시간에 한 번 실행
+openclaw cron add --name "회의 알림" \
+  --at "2026-02-15T09:00:00+09:00" \
+  --message "10시 회의 30분 전이야. 어제 논의 사항 정리해서 알려줘" \
+  --announce --channel last
+
+# 상대 시간도 가능
+openclaw cron add --name "20분 후 리마인더" \
+  --at "+20m" \
+  --message "빨래 꺼내라고 알려줘" \
+  --announce --delete-after-run
+```
+<Info>
+`--delete-after-run` 플래그를 쓰면 실행 후 자동 삭제됩니다.
+일회성 리마인더에 추천합니다.
+</Info>
+  </Tab>
+  <Tab title="--every (반복 간격)">
+```bash
+# 매 2시간마다 실행
+openclaw cron add --name "이메일 체크" \
+  --every "2h" \
+  --message "새 이메일 확인해서 중요한 거 있으면 알려줘" \
+  --announce
+
+# 매 30분마다
+openclaw cron add --name "서버 모니터링" \
+  --every "30m" \
+  --system-event "서버 상태를 점검하고 이상이 있으면 보고하라" \
+  --no-deliver
+```
+  </Tab>
+  <Tab title="--cron (크론 표현식)">
+```bash
+# 매주 월요일 오전 9시 (5-field cron)
+openclaw cron add --name "주간 리포트" \
+  --cron "0 9 * * 1" \
+  --tz "Asia/Seoul" \
+  --message "이번 주 할 일과 지난주 요약 정리해줘" \
+  --announce
+
+# 매일 오전 7시
+openclaw cron add --name "모닝 브리핑" \
+  --cron "0 7 * * *" \
+  --tz "Asia/Seoul" \
+  --message "오늘 날씨, 일정, 주요 뉴스 브리핑해줘" \
+  --announce
+```
+<Tip>
+`--tz` 옵션으로 타임존을 명시하세요. 생략하면 시스템 기본 타임존을 사용합니다.
+</Tip>
+  </Tab>
+</Tabs>
+
+## 페이로드 타입
+
+크론잡이 AI에게 전달하는 내용의 형태를 결정합니다.
+
+### `--message` (agentTurn)
+
+사용자가 직접 말하는 것처럼 AI에게 메시지를 보냅니다:
+
+```bash
+openclaw cron add --name "일기 리마인더" \
+  --every "24h" \
+  --message "오늘 있었던 일 정리해서 memory 폴더에 기록해줘" \
+  --session isolated
+```
+
+### `--system-event` (systemEvent)
+
+시스템 이벤트로 전달됩니다. 메인 세션 히스토리에 영향을 줍니다:
+
+```bash
+openclaw cron add --name "캘린더 동기화" \
+  --cron "*/30 * * * *" \
+  --system-event "캘린더를 확인하고 1시간 내 일정이 있으면 알려라" \
+  --session main
+```
+
+<Warning>
+`--system-event`는 메인 세션에서 실행되므로 대화 히스토리에 포함됩니다.
+독립 작업에는 `--message`와 `--session isolated`를 권장합니다.
+</Warning>
+
+## 세션 타겟
+
+```bash
+# 메인 세션에서 실행 (대화 컨텍스트 공유)
+--session main
+
+# 격리된 세션에서 실행 (독립적)
+--session isolated
+```
+
+| 옵션 | 대화 히스토리 | 메모리 접근 | 용도 |
+|------|-------------|-----------|------|
+| `main` | 공유 | ✅ | 대화 맥락 필요한 작업 |
+| `isolated` | 독립 | ✅ | 독립적 작업, 리포트 |
+
+## 배달 (Delivery)
+
+```bash
+# 마지막 대화 채널로 결과 전송
+--announce --channel last
+
+# 특정 채널로 전송
+--announce --to "telegram:123456789"
+
+# 배달 없이 조용히 실행
+--no-deliver
+```
+
+## 크론잡 관리
+
+```bash
+# 목록 보기
+openclaw cron list
+
+# 특정 잡 상태 확인
+openclaw cron status
+
+# 잡 비활성화/활성화
+openclaw cron disable --name "이메일 체크"
+openclaw cron enable --name "이메일 체크"
+
+# 잡 수정
+openclaw cron edit --name "이메일 체크" --every "1h"
+
+# 잡 삭제
+openclaw cron rm --name "이메일 체크"
+
+# 디버깅: 즉시 실행
+openclaw cron run --name "모닝 브리핑"
+
+# 실행 이력 확인
+openclaw cron runs --name "모닝 브리핑"
+```
+
+## 고급 옵션
+
+```bash
+# 모델 오버라이드 (비용 절감)
+--model "anthropic/claude-sonnet-4-20250514"
+
+# 씽킹 레벨 조정
+--thinking low
+
+# 타임아웃 설정
+--timeout-seconds 60
+
+# 실패해도 배달 시도
+--best-effort-deliver
+```
+
+<Tip>
+단순 체크 작업에는 `--model sonnet --thinking off`로 비용을 크게 줄일 수 있습니다.
+복잡한 분석이 필요한 작업에만 Opus를 사용하세요.
+</Tip>
+
+## 실전 예시: 하루 자동화
+
+```bash
+# 모닝 브리핑 (매일 7시)
+openclaw cron add --name "morning" \
+  --cron "0 7 * * *" --tz "Asia/Seoul" \
+  --message "모닝 브리핑: 날씨, 오늘 일정, 중요 이메일 요약" \
+  --announce --session isolated
+
+# 점심 리마인더 (평일 11:50)
+openclaw cron add --name "lunch" \
+  --cron "50 11 * * 1-5" --tz "Asia/Seoul" \
+  --message "점심시간 10분 전! 오전 작업 정리해줘" \
+  --announce --delete-after-run false
+
+# 일일 회고 (매일 22시)
+openclaw cron add --name "daily-review" \
+  --cron "0 22 * * *" --tz "Asia/Seoul" \
+  --message "오늘 하루 정리. memory 파일 업데이트하고 내일 할 일 정리" \
+  --session isolated --no-deliver
+```

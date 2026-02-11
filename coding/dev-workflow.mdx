@@ -1,0 +1,142 @@
+---
+title: "개발 워크플로우"
+description: "OpenClaw를 코딩 에이전트로 활용하는 실전 워크플로우"
+---
+
+# 개발 워크플로우
+
+OpenClaw는 **코딩 에이전트 스킬**을 통해 개발 작업을 자연어로 처리할 수 있습니다.
+터미널을 열지 않고도 Telegram에서 "이 버그 고쳐줘"라고 말하면 됩니다.
+
+## 코딩 에이전트 스킬
+
+OpenClaw는 여러 코딩 에이전트를 스킬로 지원합니다:
+
+| 에이전트 | 특징 | 설치 |
+|---------|------|------|
+| Claude Code | Anthropic 공식, 강력한 추론 | `openclaw skill install claude-code` |
+| Codex | OpenAI, 빠른 실행 | `openclaw skill install codex` |
+
+<Info>
+코딩 에이전트 스킬은 **서브에이전트**로 실행됩니다.
+메인 대화를 방해하지 않고 백그라운드에서 작업합니다.
+</Info>
+
+## 기본 사용법
+
+### 자연어로 코딩 요청
+
+```
+"src/api/users.ts에서 pagination 버그 고쳐줘"
+"새 React 컴포넌트 만들어줘 - 사용자 프로필 카드"
+"이 프로젝트에 ESLint 설정 추가해줘"
+```
+
+OpenClaw가 자동으로 적절한 코딩 에이전트를 선택하고 실행합니다.
+
+### 직접 실행
+
+```bash
+# exec 도구로 직접 명령 실행
+exec: cd ~/my-project && npm test
+
+# git 상태 확인
+exec: git status && git diff --stat
+```
+
+## 백그라운드 실행
+
+오래 걸리는 작업은 백그라운드로 보낼 수 있습니다:
+
+```bash
+# 테스트 스위트 실행 (백그라운드)
+exec(background=true): cd ~/my-project && npm run test:e2e
+
+# 빌드 실행
+exec(background=true): cd ~/my-project && npm run build
+```
+
+<Tip>
+백그라운드 작업은 `process` 도구로 상태를 확인할 수 있습니다.
+"빌드 다 됐어?" 라고 물어보면 OpenClaw가 알아서 확인합니다.
+</Tip>
+
+## PTY 모드
+
+인터랙티브 CLI가 필요한 경우 PTY 모드를 사용합니다:
+
+```bash
+# 인터랙티브 CLI 실행
+exec(pty=true): npx create-next-app@latest my-app
+
+# 코딩 에이전트를 PTY로 실행
+exec(pty=true): claude --dangerously-skip-permissions
+```
+
+PTY 모드가 필요한 경우:
+- 터미널 UI가 있는 도구 (vim, htop, lazygit)
+- 프롬프트 입력이 필요한 설치 스크립트
+- 코딩 에이전트의 인터랙티브 모드
+
+## 실전 워크플로우 예시
+
+### 버그 수정 플로우
+
+```
+사용자: "회원가입 API에서 이메일 중복 체크가 안 돼"
+
+OpenClaw 동작:
+1. 관련 파일 탐색 (read 도구)
+2. 코드 분석
+3. 수정 사항 적용 (edit 도구)
+4. 테스트 실행 (exec 도구)
+5. 결과 보고
+```
+
+### PR 리뷰 플로우
+
+```
+사용자: "PR #42 리뷰해줘"
+
+OpenClaw 동작:
+1. gh pr view 42 --json
+2. gh pr diff 42
+3. 코드 분석 및 리뷰 코멘트 작성
+4. 결과를 대화로 전달
+```
+
+### 리팩토링 플로우
+
+```
+사용자: "utils/ 폴더 정리하고 테스트 추가해줘"
+
+OpenClaw 동작:
+1. 파일 구조 분석
+2. 서브에이전트로 리팩토링 작업 위임
+3. 테스트 코드 작성
+4. 전체 테스트 실행으로 검증
+5. git commit
+```
+
+## 프로젝트 설정 팁
+
+프로젝트 루트에 `AGENTS.md`를 만들면 OpenClaw가 프로젝트 컨텍스트를 이해합니다:
+
+```markdown
+# AGENTS.md
+
+## 프로젝트
+- Next.js 14 + TypeScript
+- Prisma ORM + PostgreSQL
+- pnpm 워크스페이스
+
+## 컨벤션
+- 커밋 메시지: Conventional Commits
+- 테스트: Vitest + Testing Library
+- 린트: ESLint + Prettier
+```
+
+<Warning>
+코딩 에이전트가 파일을 수정할 때는 항상 git으로 변경사항을 추적하세요.
+`exec-policy`가 `full`이 아니면 일부 명령이 차단될 수 있습니다.
+</Warning>

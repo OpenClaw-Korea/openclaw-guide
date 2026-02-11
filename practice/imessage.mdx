@@ -1,0 +1,113 @@
+---
+title: "iMessage 연동"
+description: "imsg CLI로 iMessage를 자연어로 주고받기"
+---
+
+# iMessage 연동
+
+OpenClaw는 **imsg CLI**를 통해 macOS의 iMessage를 제어할 수 있습니다.
+"엄마한테 메시지 보내줘"라고 말하면 실제로 iMessage가 전송됩니다.
+
+## 사전 준비
+
+```bash
+# imsg CLI 설치
+brew install nicklama/tap/imsg
+
+# 버전 확인
+imsg --version  # v0.4.0+
+```
+
+<Warning>
+imsg는 **Full Disk Access(FDA)** 권한이 필요합니다.
+시스템 설정 → 개인정보 보호 → 전체 디스크 접근에서
+터미널 앱을 추가하세요. OpenClaw Gateway에는 별도로 FDA를 부여해야 합니다.
+</Warning>
+
+## 기본 사용법
+
+### 메시지 보내기
+
+```
+"엄마한테 '오늘 늦게 들어가요' 보내줘"
+"김철수한테 iMessage로 회의 시간 변경 알려줘"
+```
+
+OpenClaw가 실행하는 명령:
+```bash
+# 전화번호로 전송
+imsg send --to "+821012345678" --text "오늘 늦게 들어가요"
+
+# SMS 폴백 (상대방이 iMessage가 아닐 때)
+imsg send --to "+821012345678" --text "메시지" --service sms
+```
+
+### 메시지 확인
+
+```
+"최근 메시지 보여줘"
+"엄마한테서 온 마지막 메시지 뭐야?"
+```
+
+```bash
+# 최근 메시지 조회
+imsg history --limit 20
+
+# 특정 대화 조회
+imsg history --with "+821012345678" --limit 10
+
+# 안 읽은 메시지
+imsg history --unread
+```
+
+### 실시간 모니터링
+
+```bash
+# 새 메시지 감시 (하트비트에서 활용)
+imsg watch --timeout 30
+```
+
+## 실전 패턴
+
+### 하트비트에서 메시지 체크
+
+```markdown
+# HEARTBEAT.md
+## iMessage
+- `imsg history --unread` 실행
+- 중요한 메시지가 있으면 Telegram으로 알림
+- "읽음" 표시는 하지 않음 (사용자가 직접 확인)
+```
+
+### 자동 응답 워크플로우
+
+```
+사용자: "엄마한테서 메시지 오면 알려줘"
+
+OpenClaw 하트비트 동작:
+1. imsg history --unread 주기적 체크
+2. 엄마 번호에서 새 메시지 감지
+3. Telegram으로 내용 전달
+4. 사용자가 답장 지시하면 imsg send 실행
+```
+
+### 단체 알림
+
+```
+"프로젝트 팀원들한테 '내일 회의 10시로 변경' 보내줘"
+
+→ TOOLS.md에 연락처 매핑을 저장해두면 편리합니다:
+김철수 → +821011112222
+이영희 → +821033334444
+```
+
+<Info>
+자기 번호로는 메시지를 보낼 수 없습니다 (iMessage 제한).
+연락처 이름과 번호 매핑은 `TOOLS.md`에 저장해두면
+"엄마"라고만 말해도 올바른 번호로 전송합니다.
+</Info>
+
+<Tip>
+iMessage 연동이 잘 안 되면 `imsg doctor`로 환경을 진단하세요.
+FDA 권한, macOS 버전, chat.db 접근 여부를 확인합니다.
+</Tip>

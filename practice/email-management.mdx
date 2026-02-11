@@ -1,0 +1,129 @@
+---
+title: "이메일 관리"
+description: "gog CLI로 Gmail을 자연어로 관리하기"
+---
+
+# 이메일 관리
+
+OpenClaw는 **gog CLI**를 통해 Gmail을 자연어로 관리할 수 있습니다.
+"안 읽은 이메일 확인해줘"라고 말하면 됩니다.
+
+## 사전 준비
+
+```bash
+# gog CLI 설치
+openclaw skill install google-tools
+# 또는 직접 설치
+pip install gog
+
+# Google OAuth 인증
+gog auth login
+```
+
+<Info>
+`gog`는 Google Workspace(Gmail, Calendar, Drive)를 CLI로 제어하는 도구입니다.
+OAuth 인증이 필요하며, 한 번 인증하면 토큰이 저장됩니다.
+</Info>
+
+## 기본 사용법
+
+### 이메일 조회
+
+```
+"안 읽은 이메일 보여줘"
+"오늘 온 이메일 중 중요한 거 있어?"
+"Amazon에서 온 메일 찾아줘"
+```
+
+OpenClaw가 실행하는 명령:
+```bash
+# 안 읽은 이메일
+gog gmail list --unread --limit 10
+
+# 검색
+gog gmail list --query "from:amazon" --limit 5
+
+# 특정 이메일 읽기
+gog gmail read <message-id>
+```
+
+### 이메일 전송
+
+```
+"팀장님한테 회의록 이메일 보내줘"
+```
+
+```bash
+gog gmail send \
+  --to "manager@company.com" \
+  --subject "2/11 회의록" \
+  --body "안녕하세요, 오늘 회의 내용 정리입니다..."
+```
+
+<Warning>
+이메일 전송은 **외부로 나가는 액션**입니다.
+AGENTS.md에 "이메일 보내기 전 확인" 규칙을 설정하세요.
+</Warning>
+
+### 이메일 관리
+
+```bash
+# 읽음 표시
+gog gmail mark-read <message-id>
+
+# 라벨 추가
+gog gmail label <message-id> --add "중요"
+
+# 아카이브
+gog gmail archive <message-id>
+```
+
+## 자동화 예시
+
+### 이메일 체크 크론잡
+
+```bash
+openclaw cron add --name "email-check" \
+  --every "2h" \
+  --message "새 이메일 확인해서 중요한 거 있으면 요약해줘. 스팸이나 마케팅 메일은 무시해." \
+  --announce --session isolated \
+  --model "anthropic/claude-sonnet-4-20250514"
+```
+
+### 하트비트에서 이메일 체크
+
+```markdown
+# HEARTBEAT.md
+## 이메일
+- `gog gmail list --unread --limit 5` 실행
+- 중요 이메일이 있으면 사용자에게 알림
+- 마케팅/뉴스레터는 무시
+```
+
+## 실전 패턴
+
+### 일일 이메일 요약
+
+```
+사용자: "오늘 이메일 정리해줘"
+
+OpenClaw 동작:
+1. gog gmail list --after today --limit 50
+2. 카테고리 분류 (업무, 개인, 뉴스레터, 스팸)
+3. 중요 이메일 요약 보고
+4. 필요시 답장 초안 제안
+```
+
+### 이메일 기반 리마인더
+
+```
+사용자: "Amazon 배송 메일 오면 알려줘"
+
+→ 하트비트에서 주기적으로 체크:
+gog gmail list --query "from:amazon subject:shipped" --unread
+```
+
+<Tip>
+`gog gmail list --format json`으로 JSON 출력을 받으면
+OpenClaw가 더 정확하게 분석할 수 있습니다.
+</Tip>
