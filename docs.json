@@ -11,7 +11,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Documentation",
+        "tab": "시작",
         "groups": [
           {
             "group": "Overview",
@@ -30,6 +30,30 @@
             ]
           },
           {
+            "group": "Part 2: 설치 & 첫 설정",
+            "pages": [
+              "getting-started/installation",
+              "getting-started/first-config",
+              "getting-started/telegram-setup",
+              "getting-started/discord-setup"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "나만의 AI",
+        "groups": [
+          {
+            "group": "Part 3: 대화 & 페르소나",
+            "pages": [
+              "persona/soul-md",
+              "persona/identity-md",
+              "persona/user-md",
+              "persona/multi-persona-setup",
+              "persona/tone-and-voice"
+            ]
+          },
+          {
             "group": "Part 4: 메모리 시스템",
             "pages": [
               "memory/memory-md",
@@ -37,7 +61,12 @@
               "memory/memory-search",
               "memory/heartbeat-state"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "자동화",
+        "groups": [
           {
             "group": "Part 5: 스킬 생태계",
             "pages": [
@@ -48,6 +77,21 @@
               "skills/popular-skills"
             ]
           },
+          {
+            "group": "Part 6: 자동화",
+            "pages": [
+              "automation/heartbeat",
+              "automation/cron-jobs",
+              "automation/proactive-patterns",
+              "automation/heartbeat-md",
+              "automation/scheduled-tasks"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "확장",
+        "groups": [
           {
             "group": "Part 7: 노드 & 디바이스",
             "pages": [
@@ -76,7 +120,12 @@
               "browser/web-fetch",
               "browser/chrome-relay"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "개발 & 보안",
+        "groups": [
           {
             "group": "Part 10: 코딩 에이전트",
             "pages": [
@@ -94,7 +143,12 @@
               "security/safe-operations",
               "security/privacy"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "실전 & 로드맵",
+        "groups": [
           {
             "group": "Part 12: 실전 사례",
             "pages": [
@@ -117,50 +171,6 @@
               "roadmap/intermediate",
               "roadmap/advanced",
               "roadmap/references"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "시작하기",
-        "groups": [
-          {
-            "group": "Part 2: 설치 & 첫 설정",
-            "pages": [
-              "getting-started/installation",
-              "getting-started/first-config",
-              "getting-started/telegram-setup",
-              "getting-started/discord-setup"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "핵심 기능",
-        "groups": [
-          {
-            "group": "Part 3: 대화 & 페르소나",
-            "pages": [
-              "persona/soul-md",
-              "persona/identity-md",
-              "persona/user-md",
-              "persona/multi-persona-setup",
-              "persona/tone-and-voice"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "자동화",
-        "groups": [
-          {
-            "group": "Part 6: 자동화",
-            "pages": [
-              "automation/heartbeat",
-              "automation/cron-jobs",
-              "automation/proactive-patterns",
-              "automation/heartbeat-md",
-              "automation/scheduled-tasks"
             ]
           }
         ]
