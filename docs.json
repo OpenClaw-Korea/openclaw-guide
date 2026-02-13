@@ -30,6 +30,25 @@
             ]
           },
           {
+            "group": "Part 2: 설치 & 첫 설정",
+            "pages": [
+              "getting-started/installation",
+              "getting-started/first-config",
+              "getting-started/telegram-setup",
+              "getting-started/discord-setup"
+            ]
+          },
+          {
+            "group": "Part 3: 대화 & 페르소나",
+            "pages": [
+              "persona/soul-md",
+              "persona/identity-md",
+              "persona/user-md",
+              "persona/multi-persona-setup",
+              "persona/tone-and-voice"
+            ]
+          },
+          {
             "group": "Part 4: 메모리 시스템",
             "pages": [
               "memory/memory-md",
@@ -46,6 +65,16 @@
               "skills/create-skills",
               "skills/skill-md-format",
               "skills/popular-skills"
+            ]
+          },
+          {
+            "group": "Part 6: 자동화",
+            "pages": [
+              "automation/heartbeat",
+              "automation/cron-jobs",
+              "automation/proactive-patterns",
+              "automation/heartbeat-md",
+              "automation/scheduled-tasks"
             ]
           },
           {
@@ -96,64 +125,6 @@
             ]
           },
           {
-            "group": "Part 13: 학습 로드맵",
-            "pages": [
-              "roadmap/beginner",
-              "roadmap/intermediate",
-              "roadmap/advanced",
-              "roadmap/references"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "시작하기",
-        "groups": [
-          {
-            "group": "Part 2: 설치 & 첫 설정",
-            "pages": [
-              "getting-started/installation",
-              "getting-started/first-config",
-              "getting-started/telegram-setup",
-              "getting-started/discord-setup"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "핵심 기능",
-        "groups": [
-          {
-            "group": "Part 3: 대화 & 페르소나",
-            "pages": [
-              "persona/soul-md",
-              "persona/identity-md",
-              "persona/user-md",
-              "persona/multi-persona-setup",
-              "persona/tone-and-voice"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "자동화",
-        "groups": [
-          {
-            "group": "Part 6: 자동화",
-            "pages": [
-              "automation/heartbeat",
-              "automation/cron-jobs",
-              "automation/proactive-patterns",
-              "automation/heartbeat-md",
-              "automation/scheduled-tasks"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "실전 활용",
-        "groups": [
-          {
             "group": "Part 12: 실전 사례",
             "pages": [
               "practice/email-management",
@@ -166,6 +137,15 @@
               "practice/imessage",
               "practice/apple-reminders",
               "practice/excel"
+            ]
+          },
+          {
+            "group": "Part 13: 학습 로드맵",
+            "pages": [
+              "roadmap/beginner",
+              "roadmap/intermediate",
+              "roadmap/advanced",
+              "roadmap/references"
             ]
           }
         ]
