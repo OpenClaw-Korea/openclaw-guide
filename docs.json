@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "OpenClaw 완전 가이드",
+  "name": "OpenClaw 실전 가이드 beta",
   "colors": {
     "primary": "#10B981",
     "light": "#34D399",
